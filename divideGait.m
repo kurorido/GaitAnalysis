@@ -1,9 +1,14 @@
-% gait = divideGait(gait, 13)
-function [gait] = divideGait( gait, cycle, speedVariation)
+% data one
+% gait = divideGait(gait, 13, 5, 5)
+% data two
+% gait = divideGait(gait, 13, 4, 5)
+function [gait] = divideGait( gait, cycle, Rinterval, Linterval)
 	
-	% Speed Variation = 10 As Default
+	speedVariation = 15
+	
 	if nargin < 3
-		speedVariation = 15
+		Rinterval = 5
+		Linterval = 5
 	end
 	
 	%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,25 +35,27 @@ function [gait] = divideGait( gait, cycle, speedVariation)
 	JointLeftAngle(:,1) = gait.jointAngle(:, 63)
 	JointRightAngle(:,1) = gait.jointAngle(:, 51)
 	
-	
-	
 	u = sort(unique(JointRightAngle(:,1)))
+	intervalWidth = int32(length(u) / Rinterval)
+	maxRightAnkle = median(u(end-intervalWidth+1:end))
 	minRightAnkle = u(cycle*20)
-	maxRightAnkle = u(end-cycle*50)
+	%maxRightAnkle = u(end-cycle*50)
 	
 	u = sort(unique(JointLeftAngle(:,1)))
+	intervalWidth = int32(length(u) / Linterval)
+	maxLeftAnkle = median(u(end-intervalWidth:end))
 	minLeftAnkle = u(cycle*20)
-	maxLeftAnkle = u(end-cycle*50)
+	%maxLeftAnkle = u(end-cycle*50)
 	
 	% Right Initial Contact ( Check Left Ankle )
 	for i = [2:gait.frameLength]
 		if JointLeftAngle(i) > maxLeftAnkle
 			% Check if too near?
-			if (length(gait.RightInitialContact) >= 4)
-				if ( i - gait.RightInitialContact(end) < (gait.RightInitialContact(end) - gait.RightInitialContact(3)) / (length(gait.RightInitialContact) - 3) - speedVariation)
-					continue
-				end
-			end
+			%if (length(gait.RightInitialContact) >= 4)
+			%	if ( i - gait.RightInitialContact(end) < (gait.RightInitialContact(end) - gait.RightInitialContact(3)) / (length(gait.RightInitialContact) - 3) - speedVariation)
+			%		continue
+			%	end
+			%end
 			
 			if(length(gait.RightInitialContact) > 0)
 				if ( i - gait.RightInitialContact(end) <= 30 )
@@ -68,11 +75,11 @@ function [gait] = divideGait( gait, cycle, speedVariation)
 		if JointRightAngle(i) > maxRightAnkle
 		
 			% Check if too near?
-			if (length(gait.LeftInitialContact) >= 4)
-				if ( i - gait.LeftInitialContact(end) < (gait.LeftInitialContact(end) - gait.LeftInitialContact(3)) / (length(gait.LeftInitialContact) - 3) - speedVariation)
-					continue
-				end
-			end
+			%if (length(gait.LeftInitialContact) >= 4)
+			%	if ( i - gait.LeftInitialContact(end) < (gait.LeftInitialContact(end) - gait.LeftInitialContact(3)) / (length(gait.LeftInitialContact) - 3) - speedVariation)
+			%		continue
+			%	end
+			%end
 			
 			if(length(gait.LeftInitialContact) > 0)
 				if ( i - gait.LeftInitialContact(end) <= 30 )
@@ -87,20 +94,20 @@ function [gait] = divideGait( gait, cycle, speedVariation)
 	end
 	% End Left Initial Contact
 	
-	DropLeft = []
-	DropRight = []
-	
-	for i = [1:length(gait.LeftInitialContact)]
-		for j = [1:length(gait.RightInitialContact)]
-			if(abs(gait.LeftInitialContact(i) - gait.RightInitialContact(j)) <= 40)
-				DropLeft = [DropLeft gait.LeftInitialContact(i)]
-				DropRight = [DropRight gait.RightInitialContact(j)]
-			end
-		end
-	end
-	
-	gait.LeftInitialContact = setdiff(gait.LeftInitialContact, DropLeft)
-	gait.RightInitialContact = setdiff(gait.RightInitialContact, DropRight)
+	%DropLeft = []
+	%DropRight = []
+	%
+	%for i = [1:length(gait.LeftInitialContact)]
+	%	for j = [1:length(gait.RightInitialContact)]
+	%		if(abs(gait.LeftInitialContact(i) - gait.RightInitialContact(j)) <= 40)
+	%			DropLeft = [DropLeft gait.LeftInitialContact(i)]
+	%			DropRight = [DropRight gait.RightInitialContact(j)]
+	%		end
+	%	end
+	%end
+	%
+	%gait.LeftInitialContact = setdiff(gait.LeftInitialContact, DropLeft)
+	%gait.RightInitialContact = setdiff(gait.RightInitialContact, DropRight)
 	
 	% Length Validation (Drop)
 	%if(length(gait.LeftInitialContact) > length(gait.RightInitialContact))

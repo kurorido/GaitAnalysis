@@ -1,5 +1,5 @@
-% gait = initGait('..\Test Data\B04-1-nor-wok-one.mvnx')
-% gait = initGait('..\Test Data\B04-1-nor-wok-two.mvnx')
+% gait = initGait('..\..\Test Data\B04-1-nor-wok-one.mvnx')
+% gait = initGait('..\..\Test Data\B04-1-nor-wok-two.mvnx')
 function [gait] = initGait(fileName)
 	
 	[tree treeName] = xml_read (fileName)
@@ -20,7 +20,7 @@ function [gait] = initGait(fileName)
 	frameLength = length(tree.subject.frames.frame)
 	
 	% Init Frame Length
-	gait.frameLength = frameLength - 3
+	gait.frameLength = frameLength - 2
 	
 	% Init Marker
 	gait.LeftInitialContact = []
