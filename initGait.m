@@ -1,4 +1,5 @@
 % gait = initGait('..\Test Data\B04-1-nor-wok-one.mvnx')
+% gait = initGait('..\Test Data\B04-1-nor-wok-two.mvnx')
 function [gait] = initGait(fileName)
 	
 	[tree treeName] = xml_read (fileName)

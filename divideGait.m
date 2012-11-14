@@ -1,52 +1,132 @@
-function [gait] = divideGait( gait, speedVariation )
+% gait = divideGait(gait, 13)
+function [gait] = divideGait( gait, cycle, speedVariation)
 	
 	% Speed Variation = 10 As Default
-	if nargin < 2
-		speedVariation = 10
+	if nargin < 3
+		speedVariation = 15
 	end
 	
 	%%%%%%%%%%%%%%%%%%%%%%%
+	% Filter
 	
-	u = sort(unique((gait.sensorAcceleration(:,49))))
-	maxLeftFootSensorAcceleration = u(end-25)
-	u = sort(unique((gait.sensorAcceleration(:,40))))
-	maxRightFootSensorAcceleration = u(end-25)
+	% 3th order lowpass 20Hz (Sample Rate: 120Hz)
+	%[B,A]= butter(3, 20/60, 'low')
+	%[B,A]= butter(3,30/60);
+	%JointLeftAngle(:,1) = filtfilt(B, A, gait.jointAngle(:, 63))
+	%JointRightAngle(:,1) = filtfilt(B, A, gait.jointAngle(:, 51))
 	
-	%maxLeftFootSensorAcceleration = -3
-	%maxRightFootSensorAcceleration = -3
+	%figure(1)
+	%hold all
+	%h(1) = plot([1:length(JointLeftAngle)], gait.jointAngle(:, 63))
+	%s{1} = 'Origin'
+	%h(2) = plot([1:length(JointLeftAngle)], JointLeftAngle(:,1))
+	%s{2} = 'Filtered'
+	%legend(h, s)
+	%hold off
 	
-	% Left Initial Contact
+	% End Filter
+	%%%%%%%%%%%%%%%%%%%%%%%
+	
+	JointLeftAngle(:,1) = gait.jointAngle(:, 63)
+	JointRightAngle(:,1) = gait.jointAngle(:, 51)
+	
+	
+	
+	u = sort(unique(JointRightAngle(:,1)))
+	minRightAnkle = u(cycle*20)
+	maxRightAnkle = u(end-cycle*50)
+	
+	u = sort(unique(JointLeftAngle(:,1)))
+	minLeftAnkle = u(cycle*20)
+	maxLeftAnkle = u(end-cycle*50)
+	
+	% Right Initial Contact ( Check Left Ankle )
 	for i = [2:gait.frameLength]
-		if gait.sensorAcceleration(i,49) > maxLeftFootSensorAcceleration
-			if (gait.sensorAcceleration(i, 49) > gait.sensorAcceleration(i-1, 49)) && (gait.sensorAcceleration(i, 49) > gait.sensorAcceleration(i+1, 49))
-				gait.LeftInitialContact = [ gait.LeftInitialContact i ]
+		if JointLeftAngle(i) > maxLeftAnkle
+			% Check if too near?
+			if (length(gait.RightInitialContact) >= 4)
+				if ( i - gait.RightInitialContact(end) < (gait.RightInitialContact(end) - gait.RightInitialContact(3)) / (length(gait.RightInitialContact) - 3) - speedVariation)
+					continue
+				end
 			end
-		end
-	end
-	% End Left Inital Contact
-
-	% Right Initial Contact
-	for i = [2:gait.frameLength]
-		if gait.sensorAcceleration(i,40) > maxRightFootSensorAcceleration
-			if (gait.sensorAcceleration(i, 40) > gait.sensorAcceleration(i-1, 40)) && (gait.sensorAcceleration(i, 40) > gait.sensorAcceleration(i+1, 40))
+			
+			if(length(gait.RightInitialContact) > 0)
+				if ( i - gait.RightInitialContact(end) <= 30 )
+					continue
+				end
+			end
+			
+			if ( (JointLeftAngle(i) > JointLeftAngle(i-1)) && (JointLeftAngle(i) > JointLeftAngle(i+1)) )
 				gait.RightInitialContact = [ gait.RightInitialContact i ]
 			end
 		end
 	end
-	% End Right Initial Contact
+	% End Right Inital Contact
+
+	% Left Initial Contact ( Check Right Ankle )
+	for i = [2:gait.frameLength]
+		if JointRightAngle(i) > maxRightAnkle
+		
+			% Check if too near?
+			if (length(gait.LeftInitialContact) >= 4)
+				if ( i - gait.LeftInitialContact(end) < (gait.LeftInitialContact(end) - gait.LeftInitialContact(3)) / (length(gait.LeftInitialContact) - 3) - speedVariation)
+					continue
+				end
+			end
+			
+			if(length(gait.LeftInitialContact) > 0)
+				if ( i - gait.LeftInitialContact(end) <= 30 )
+					continue
+				end
+			end
+
+			if ( (JointRightAngle(i) > JointRightAngle(i-1)) && (JointRightAngle(i) > JointRightAngle(i+1)) )
+				gait.LeftInitialContact = [ gait.LeftInitialContact i ]
+			end
+		end
+	end
+	% End Left Initial Contact
+	
+	DropLeft = []
+	DropRight = []
+	
+	for i = [1:length(gait.LeftInitialContact)]
+		for j = [1:length(gait.RightInitialContact)]
+			if(abs(gait.LeftInitialContact(i) - gait.RightInitialContact(j)) <= 40)
+				DropLeft = [DropLeft gait.LeftInitialContact(i)]
+				DropRight = [DropRight gait.RightInitialContact(j)]
+			end
+		end
+	end
+	
+	gait.LeftInitialContact = setdiff(gait.LeftInitialContact, DropLeft)
+	gait.RightInitialContact = setdiff(gait.RightInitialContact, DropRight)
+	
+	% Length Validation (Drop)
+	%if(length(gait.LeftInitialContact) > length(gait.RightInitialContact))
+	%	diff = length(gait.LeftInitialContact) - length(gait.RightInitialContact)
+	%	gait.LeftInitialContact(end-diff+1:end) = []
+	%elseif (length(gait.LeftInitialContact) < length(gait.RightInitialContact))
+	%	diff = length(gait.RightInitialContact) - length(gait.LeftInitialContact)
+	%	gait.RightInitialContact(end-diff+1:end) = []
+	%end
+	
+	% Drop First Step
+	
 
 	% Left Toe Off
 	for i = [2:gait.frameLength]
 		
-		if gait.jointAngle(i, 63) < -12
-		
+		if JointLeftAngle(i) < minLeftAnkle
+			
+			% Check if too near?
 			if (length(gait.LeftToeOff) >= 3)
 				if ( i - gait.LeftToeOff(end) < (gait.LeftToeOff(end) - gait.LeftToeOff(2)) / (length(gait.LeftToeOff) - 2) - speedVariation)
 					continue
 				end
 			end	
 			
-			if (gait.jointAngle(i, 63) < gait.jointAngle(i-1, 63) && gait.jointAngle(i, 63) < gait.jointAngle(i+1, 63))
+			if (JointLeftAngle(i) < gait.jointAngle(i-1, 63) && JointLeftAngle(i) < gait.jointAngle(i+1, 63))
 				gait.LeftToeOff = [gait.LeftToeOff i]
 			end
 		end
@@ -56,7 +136,7 @@ function [gait] = divideGait( gait, speedVariation )
 	% Right Toe Off
 	for i = [2:gait.frameLength]
 		
-		if gait.jointAngle(i, 51) < -12
+		if JointRightAngle(i) < minRightAnkle
 		
 			if (length(gait.RightToeOff) >= 3)
 				if ( i - gait.RightToeOff(end) < (gait.RightToeOff(end) - gait.RightToeOff(2)) / (length(gait.RightToeOff) - 2) - speedVariation)
@@ -64,23 +144,43 @@ function [gait] = divideGait( gait, speedVariation )
 				end
 			end	
 			
-			if (gait.jointAngle(i, 51) < gait.jointAngle(i-1, 51) && gait.jointAngle(i, 51) < gait.jointAngle(i+1, 51))
+			if (JointRightAngle(i) < JointRightAngle(i-1) && JointRightAngle(i) < JointRightAngle(i+1))
 				gait.RightToeOff = [gait.RightToeOff i]
 			end
 		end
 	end	
 	% End Right Toe Off
 	
-	% Chekc Left Foot First Or Right Foot First
-	if gait.RightInitialContact(1) > gait.LeftInitialContact(1)
-		% Left Foot First
-		for i = [1:length(gait.LeftInitialContact)]
-			% gait.DoubleSupport = [gait.DoubleSupport gait.LeftInitialContact
-		end
-	else
-		% Right Foot First
+	%% Length Validation (Drop)
+	%if(length(gait.LeftToeOff) > length(gait.RightToeOff))
+	%	diff = length(gait.LeftToeOff) - length(gait.RightToeOff)
+	%	gait.LeftToeOff(end-diff+1:end) = []
+	%elseif (length(gait.LeftToeOff) < length(gait.RightToeOff))
+	%	diff = length(gait.RightToeOff) - length(gait.LeftToeOff)
+	%	gait.RightToeOff(end-diff+1:end) = []
+	%end
 	
-	
-	end
+	%% Chekc Left Foot First Or Right Foot First
+	%if gait.RightInitialContact(1) > gait.LeftInitialContact(1)
+	%	% Left Foot First
+	%	for i = [1:length(gait.LeftInitialContact)]
+	%		gait.DoubleSupport(end + 1,1) = gait.LeftInitialContact(i)
+	%		gait.DoubleSupport(end,2) = gait.RightToeOff(i)
+	%		gait.DoubleSupport(end,3) = gait.RightToeOff(i) - gait.LeftInitialContact(i)
+	%		gait.DoubleSupport(end + 1,1) = gait.RightInitialContact(i)
+	%		gait.DoubleSupport(end,2) = gait.LeftToeOff(i)
+	%		gait.DoubleSupport(end,3) = gait.LeftToeOff(i) - gait.RightInitialContact(i)
+	%	end
+	%else
+	%	% Right Foot First
+	%	for i = [1:length(gait.RightInitialContact)]
+	%		gait.DoubleSupport(end + 1,1) = gait.RightInitialContact(i)
+	%		gait.DoubleSupport(end,2) = gait.LeftToeOff(i)
+	%		gait.DoubleSupport(end,3) = gait.LeftToeOff(i) - gait.RightInitialContact(i)
+	%		gait.DoubleSupport(end + 1,1) = gait.LeftInitialContact(i)
+	%		gait.DoubleSupport(end,2) = gait.RightToeOff(i)
+	%		gait.DoubleSupport(end,3) = gait.RightToeOff(i) - gait.LeftInitialContact(i)
+	%	end
+	%end
 	
 end
