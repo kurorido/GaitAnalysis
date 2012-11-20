@@ -1,5 +1,8 @@
 % gait = initGait('..\..\Test Data\B04-1-nor-wok-one.mvnx')
 % gait = initGait('..\..\Test Data\B04-1-nor-wok-two.mvnx')
+% gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-one.mvnx')
+% gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-two.mvnx')
+% gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-three.mvnx')
 function [gait] = initGait(fileName)
 	
 	[tree treeName] = xml_read (fileName)
@@ -21,12 +24,5 @@ function [gait] = initGait(fileName)
 	
 	% Init Frame Length
 	gait.frameLength = frameLength - 2
-	
-	% Init Marker
-	gait.LeftInitialContact = []
-	gait.RightInitialContact = []
-	gait.LeftToeOff = []
-	gait.RightToeOff = []
-	gait.DoubleSupport = []
 
 end

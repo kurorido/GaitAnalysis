@@ -2,7 +2,7 @@
 % gait = divideGait(gait, 13, 5, 5)
 % data two
 % gait = divideGait(gait, 13, 4, 5)
-function [gait] = divideGait( gait, cycle, Rinterval, Linterval)
+function [gait] = divideGaitByJointAngle( gait, cycle, Rinterval, Linterval )
 	
 	speedVariation = 15
 	

@@ -1,3 +1,4 @@
+% cycleCompare( gait, 5, 10, 'R', 100)
 function [medianData] = cycleCompare( gait, startCycle, endCycle, compareBy, sampleRate)
 	
 	figure(1)
@@ -25,8 +26,10 @@ function [medianData] = cycleCompare( gait, startCycle, endCycle, compareBy, sam
 		s{i - startCycle + 1} = sprintf('Cycle %d', i);
 		
 	end
-		
-	%median(medianData, 2)
+	
+	medianData = median(medianData ,2)
+	h(end+1) = plot([1:sampleRate], medianData(:,1));
+	s{end+ 1} = sprintf('Median');
 	
 	legend(h, s)
 	
