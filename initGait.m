@@ -2,8 +2,15 @@
 % gait = initGait('..\..\Test Data\B04-1-nor-wok-two.mvnx')
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-one.mvnx')
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-two.mvnx')
+
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-three.mvnx')
+% gait = divideGaitBySensorAcceleration(gait, 13, 15, 15)
+
+% gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-sk-work-one.mvnx')
+% gait = divideGaitBySensorAcceleration(gait, 13, 14, 10)
 function [gait] = initGait(fileName)
+	
+	gait = Gait();
 	
 	[tree treeName] = xml_read (fileName)
 	disp([treeName{1} ' ='])

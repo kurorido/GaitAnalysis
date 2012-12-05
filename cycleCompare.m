@@ -1,4 +1,4 @@
-% cycleCompare( gait, 5, 10, 'R', 100)
+% cycleCompare( gait, 5, 7, 'R', 100)
 function [medianData] = cycleCompare( gait, startCycle, endCycle, compareBy, sampleRate)
 	
 	figure(1)
@@ -6,13 +6,15 @@ function [medianData] = cycleCompare( gait, startCycle, endCycle, compareBy, sam
 	
 	medianData = []
 	
-	for i = [startCycle:endCycle]
+	for i = [startCycle:endCycle-1]
 	
 		% Data
 		if compareBy == 'R'
 			y = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], 51);
+			indexLeftInitialContact = []
 		else
 			y = gait.jointAngle([ gait.LeftInitialContact(i) : gait.LeftInitialContact(i + 1) ], 63);
+			indexRightInitialContact = []
 		end
 		
 		% Resample
@@ -32,6 +34,15 @@ function [medianData] = cycleCompare( gait, startCycle, endCycle, compareBy, sam
 	s{end+ 1} = sprintf('Median');
 	
 	legend(h, s)
+	
+	gait.medianGait = []
+	gait.medianGait = [ gait.medianGait median(indexRightToeOff) ]
+	if compareBy == 'R'
+		gait.medianGait = [ gait.medianGait median(indexLeftInitialContact) ]
+	else
+		gait.medianGait = [ gait.medianGait median(indexRightInitialContact) ]
+	end
+	gait.medianGait = [ gait.medianGait median(indexLeftToeOff) ]
 	
 	hold off
 end

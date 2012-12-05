@@ -8,6 +8,8 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	gait.RightToeOff = []
 	gait.DoubleSupport = []
 
+	nearDiff = 15
+	
 	%if nargin < 3
 	%	Rinterval = 5
 	%	Linterval = 5
@@ -22,7 +24,7 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	% 3th order lowpass 20Hz (Sample Rate: 120Hz)
 	[B,A]= butter(3, 20/60, 'low')
 	LeftFootZ(:,1) = filtfilt(B, A, LeftFootZ(:, 1))
-	RightFootZ(:,1) = filtfilt(B, A, RightFootZ(:, 1))	
+	RightFootZ(:,1) = filtfilt(B, A, RightFootZ(:, 1))
 	
 	% Start Detection
 	LeftStart = 1
@@ -56,6 +58,8 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	ActualFrameLength = gait.frameLength - Start
 	
+	gait.Start = Start
+	
 	%figure(1)
 	%hold all
 	%h(1) = plot([1:length(LeftFootZ)], gait.sensorAcceleration(:,51))
@@ -83,6 +87,7 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	% Left Initial Contact
 	for i = [2:ActualFrameLength]
+	
 		if LeftFootZ(i) < medianLeftFootZ_First
 			if (LeftFootZ(i) < LeftFootZ(i-1) && LeftFootZ(i) < LeftFootZ(i+1))
 				gait.LeftInitialContact = [gait.LeftInitialContact i+Start]
@@ -92,6 +97,7 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	% Right Initial Contact
 	for i = [2:ActualFrameLength]
+	
 		if RightFootZ(i) < medianRightFootZ_First
 			if (RightFootZ(i) < RightFootZ(i-1) && RightFootZ(i) < RightFootZ(i+1))
 				gait.RightInitialContact = [gait.RightInitialContact i+Start]
@@ -101,6 +107,7 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	% Left Toe Off
 	for i = [2:ActualFrameLength]
+		
 		if LeftFootZ(i) > medianLeftFootZ_Last
 			if (LeftFootZ(i) > LeftFootZ(i-1) && LeftFootZ(i) > LeftFootZ(i+1))
 				gait.LeftToeOff = [gait.LeftToeOff i+Start]
@@ -113,6 +120,7 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	% Right Toe Off
 	for i = [2:ActualFrameLength]
+	
 		if RightFootZ(i) > medianRightFootZ_Last
 			if (RightFootZ(i) > RightFootZ(i-1) && RightFootZ(i) > RightFootZ(i+1))
 				gait.RightToeOff = [gait.RightToeOff i+Start]
@@ -142,4 +150,62 @@ function [gait] = divideGaitBySensorAcceleration( gait, cycle, Rinterval, Linter
 	
 	gait.RightToeOff = setdiff(gait.RightToeOff, DropRight)
 	gait.LeftToeOff = setdiff(gait.LeftToeOff, DropLeft)
+	
+	% Smart Validation (Left First Or Right First ??)
+	if(gait.RightInitialContact(1) > gait.LeftInitialContact(1))
+		
+		if(gait.LeftToeOff(1) < gait.LeftInitialContact(1))
+			gait.LeftToeOff = gait.LeftToeOff(2:end)
+		end
+		
+		if(gait.RightToeOff(1) < gait.LeftInitialContact(1))
+			gait.RightToeOff = gait.RightToeOff(2:end)
+		end
+		
+	else
+		
+		if(gait.LeftToeOff(1) < gait.RightInitialContact(1))
+			gait.LeftToeOff = gait.LeftToeOff(2:end)
+		end
+		
+		if(gait.RightToeOff(1) < gait.RightInitialContact(1))
+			gait.RightToeOff = gait.RightToeOff(2:end)
+		end
+		
+	end
+	
+	% Distance Validation
+	Drop = []
+	
+	for i = [1:length(gait.RightToeOff)-1]
+		if(abs(gait.RightToeOff(i) - gait.RightToeOff(i+1)) <= nearDiff)
+			Drop = [Drop gait.RightToeOff(i)]
+		end
+	end
+	
+	gait.RightToeOff = setdiff(gait.RightToeOff, Drop)
+	
+	Drop = []
+	
+	for i = [1:length(gait.LeftToeOff)-1]
+		if(abs(gait.LeftToeOff(i) - gait.LeftToeOff(i+1)) <= nearDiff)
+			Drop = [Drop gait.LeftToeOff(i)]
+		end
+	end
+	
+	gait.LeftToeOff = setdiff(gait.LeftToeOff, Drop)
+	
+	% Length Validation
+	if(length(gait.RightToeOff) ~= length(gait.LeftToeOff))
+		if(length(gait.RightToeOff) > length(gait.LeftToeOff))
+			gait.RightInitialContact = gait.RightInitialContact(1:length(gait.LeftToeOff))
+			gait.LeftInitialContact = gait.LeftInitialContact(1:length(gait.LeftToeOff))
+			gait.RightToeOff = gait.RightToeOff(1:length(gait.LeftToeOff))
+		else
+			gait.RightInitialContact = gait.RightInitialContact(1:length(gait.RightToeOff))
+			gait.LeftInitialContact = gait.LeftInitialContact(1:length(gait.RightToeOff))
+			gait.LeftToeOff = gait.LeftToeOff(1:length(gait.RightToeOff))			
+		end
+	end
+	
 end
