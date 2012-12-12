@@ -26,16 +26,16 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 	for i = [startCycle:endCycle]
 	
 		% Data
-		if compareBy == 'R'
-			y = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], 51);
+		%if compareBy == 'R'
+		%	y = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], 51);
 			% All Data
-			all_data = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], :);
+		%	all_data = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], :);
 			
-		else
+		%else
 			y = gait.jointAngle([ gait.LeftInitialContact(i) : gait.LeftInitialContact(i + 1) ], 63);
 			% All Data
 			all_data = gait.jointAngle([ gait.LeftInitialContact(i) : gait.LeftInitialContact(i + 1) ], :);
-		end
+		%end
 		
 		% Resample
 		y_resampled = resample(y, sampleRate, length(y));
@@ -59,28 +59,33 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 	h(end+1) = plot([1:sampleRate], medianData(:,1));
 	s{end+ 1} = sprintf('Median');
 	
-	gait.MedianGait.allMedianData = []
-	gait.MedianGait.allMedianData = all_median_data
+	gait.MedianGait.allData = []
+	gait.MedianGait.allData = all_median_data
 	
 	for i = [1:66]
 		
 		tmpCycleValue = []
 		
-		for j = [1:length(all_median_data)]
+		for j = [1:length(gait.MedianGait.allData)]
 		
-			tmpData = all_median_data{j}
+			tmpData = gait.MedianGait.allData{j}
 			
 			tmpCycleValue(:, j) = tmpData(:, i)
 			
 		end
 		
-		tmpCycleValue = median(tmpCycleValue, 2)
+		tmpMedianCycleValue = median(tmpCycleValue, 2)
+		tmpStdCycleValue = std(tmpCycleValue, 0, 2)
+		tmpMeanCycleValue = mean(tmpCycleValue, 2)
 		
-		result_median_data(:, i) = tmpCycleValue
-	
+		result_median_data(:, i) = tmpMedianCycleValue
+		result_std_data(:, i) = tmpStdCycleValue
+		result_mean_data(:, i) = tmpMeanCycleValue
 	end
 	
+	gait.MedianGait.result_std_data = result_std_data;
 	gait.MedianGait.all_median_data = result_median_data;
+	
 	gait.MedianGait.medianData = medianData
 	
 	gait.MedianGait.mean = []

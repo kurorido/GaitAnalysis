@@ -4,7 +4,7 @@
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-two.mvnx')
 
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-nor-wok-three.mvnx')
-% gait = divideGaitBySensorAcceleration(gait, 13, 15, 15)
+% gait = divideGaitBySensorAcceleration(gait, 13, 10, 10)
 
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-sk-work-one.mvnx')
 % gait = divideGaitBySensorAcceleration(gait, 13, 14, 10)
