@@ -1,6 +1,7 @@
 classdef Gait < handle
 
 	properties
+		id;
 		LeftInitialContact = [];
 		RightInitialContact = [];
 		LeftToeOff = [];

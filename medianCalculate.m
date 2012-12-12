@@ -1,63 +1,49 @@
-function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleSelectStart, cycleSelectEnd)
-    
-	if gait.LeftInitialContact(1) > gait.RightInitialContact(1)
+function [ gait ] = medianCalculate(gait, choose)
+
+	sampleRate = 100;
+
+	if gait.LeftInitialContact(1) < gait.RightInitialContact(1)
 		compareBy = 'L'
 	else
 		compareBy = 'R'
 	end
 	
-    sampleRate = 100
-    
-	startCycle = get(cycleSelectStart, 'Value')
-	endCycle = get(cycleSelectEnd, 'Value')
-	
-	if(startCycle > endCycle)
-		msgbox('Start Cannot Be Smaller Than End!','Error!!','error')
-		return
-	end
-	
-	axes(panel)
+	f = figure(1)
 	cla
 	hold all
-	
 	medianData = []
-	all_median_data = []
-	
-	for i = [startCycle:endCycle]
-	
-		% Data
+
+	for i = [1:length(choose)]
+		
 		if compareBy == 'R'
-			y = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], 51);
-			% All Data
-			all_data = gait.jointAngle([ gait.RightInitialContact(i) : gait.RightInitialContact(i + 1) ], :);
-			
+			y = gait.jointAngle([ gait.RightInitialContact(choose(i)) : gait.RightInitialContact(choose(i) + 1) ], 51);
+			all_data = gait.jointAngle([ gait.RightInitialContact(choose(i)) : gait.RightInitialContact(choose(i) + 1) ], :);
 		else
-			y = gait.jointAngle([ gait.LeftInitialContact(i) : gait.LeftInitialContact(i + 1) ], 63);
-			% All Data
-			all_data = gait.jointAngle([ gait.LeftInitialContact(i) : gait.LeftInitialContact(i + 1) ], :);
+			y = gait.jointAngle([ gait.LeftInitialContact(choose(i)) : gait.LeftInitialContact(choose(i) + 1) ], 63);
+			all_data = gait.jointAngle([ gait.LeftInitialContact(choose(i)) : gait.LeftInitialContact(choose(i) + 1) ], :);
 		end
 		
 		% Resample
 		y_resampled = resample(y, sampleRate, length(y));
+
+		% Push Resample Data Into Array, Prepare For Median Caulcation
+		medianData = [medianData y_resampled]		
 		
 		% all resample
 		all_data_resampled = resample(all_data, sampleRate, size(all_data, 1));
 		
+		all_median_data{i} = all_data_resampled
 		
-		% Push Resample Data Into Array, Prepare For Median Caulcation
-		medianData = [medianData y_resampled]
-		
-		all_median_data{i-startCycle+1} = all_data_resampled
-		
-		% Legend
-		h(i - startCycle + 1) = plot([1:sampleRate], y_resampled);
-		s{i - startCycle + 1} = sprintf('Cycle %d', i);
-		
+		h(i) = plot([1:sampleRate], y_resampled);
+		s{i} = sprintf('Cycle %d', choose(i));
+	
 	end
 	
 	medianData = median(medianData ,2)
 	h(end+1) = plot([1:sampleRate], medianData(:,1));
 	s{end+ 1} = sprintf('Median');
+	legend(h, s)
+	hold off	
 	
 	gait.MedianGait.allMedianData = []
 	gait.MedianGait.allMedianData = all_median_data
@@ -79,31 +65,21 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 		result_median_data(:, i) = tmpCycleValue
 	
 	end
-	
+
 	gait.MedianGait.all_median_data = result_median_data;
-	gait.MedianGait.medianData = medianData
 	
 	gait.MedianGait.mean = []
 	gait.MedianGait.median = []
-	gait.MedianGait.max = []
-	gait.MedianGait.min = []
 	gait.MedianGait.std = []
-	gait.MedianGait.area = []
 	gait.MedianGait.percentile90 = []
 	gait.MedianGait.percentile10 = []
-	gait.MedianGait.timetoPeak = []
 	
 	for i = [1:66]
 		gait.MedianGait.mean = [gait.MedianGait.mean mean(result_median_data(:,i))]
 		gait.MedianGait.median = [gait.MedianGait.median median(result_median_data(:,i))]
-		[v, k] = max(result_median_data(:,i))
-		gait.MedianGait.max = [gait.MedianGait.max v]
-		gait.MedianGait.timetoPeak = [gait.MedianGait.timetoPeak k]
-		gait.MedianGait.min = [gait.MedianGait.min min(result_median_data(:,i))]
 		gait.MedianGait.std = [gait.MedianGait.std std(result_median_data(:,i))]
 		gait.MedianGait.percentile90 = [gait.MedianGait.percentile90 prctile(result_median_data(:,i), 90)]
 		gait.MedianGait.percentile10 = [gait.MedianGait.percentile10 prctile(result_median_data(:,i), 10)]
-		%gait.MedianGait.area = trapz( [1:100] , abs)
 	end
 	
 	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P10', 'P90'}
@@ -121,16 +97,5 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 	d(10,:) = {'LeftHip', 'Z', gait.MedianGait.mean(57), gait.MedianGait.median(57), gait.MedianGait.std(57), gait.MedianGait.percentile10(57), gait.MedianGait.percentile90(57) }	
 	xlswrite(strcat(gait.id ,'.xls'), d, 'MVN-Part');
 	xlswrite(strcat(gait.id ,'.xls'), num2cell(gait.MedianGait.all_median_data), 'MVN-All');	
-	
-	%gait.MedianGait.mean = mean(result_median_data, 2)
-	%gait.MedianGait.median = median(result_median_data, 2)
-	%gait.MedianGait.std = std(result_median_data, 2)
-	%gait.MedianGait.percentile95 = prctile(medianData(:,1), 95)
-	%gait.MedianGait.percentile5 = prctile(medianData(:,1), 5)
-	
-	legend(h, s)
-	
-	hold off
-    
-end
 
+end

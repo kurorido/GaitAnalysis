@@ -8,12 +8,18 @@
 
 % gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B04-1-sk-work-one.mvnx')
 % gait = divideGaitBySensorAcceleration(gait, 13, 14, 10)
+
+% gait = initGait('D:\Roli\Dropbox\NCKU\MVN data processing\MVN Export Data\Test Data\B03-1-nor-stair-up-one.mvnx')
+
 function [gait] = initGait(fileName)
 	
 	gait = Gait();
 	
 	[tree treeName] = xml_read (fileName)
 	disp([treeName{1} ' ='])
+	
+	[pathstr, name, ext] = fileparts(fileName)
+	gait.id = name
 	
 	% gen_object_display(tree)
 	
