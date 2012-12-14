@@ -70,16 +70,25 @@ function [ gait ] = medianCalculate(gait, choose)
 	
 	gait.MedianGait.mean = []
 	gait.MedianGait.median = []
+	gait.MedianGait.max = []
+	gait.MedianGait.min = []
 	gait.MedianGait.std = []
+	gait.MedianGait.area = []
 	gait.MedianGait.percentile90 = []
 	gait.MedianGait.percentile10 = []
+	gait.MedianGait.timetoPeak = []
 	
 	for i = [1:66]
 		gait.MedianGait.mean = [gait.MedianGait.mean mean(result_median_data(:,i))]
 		gait.MedianGait.median = [gait.MedianGait.median median(result_median_data(:,i))]
+		[v, k] = max(result_median_data(:,i))
+		gait.MedianGait.max = [gait.MedianGait.max v]
+		gait.MedianGait.timetoPeak = [gait.MedianGait.timetoPeak k]
+		gait.MedianGait.min = [gait.MedianGait.min min(result_median_data(:,i))]
 		gait.MedianGait.std = [gait.MedianGait.std std(result_median_data(:,i))]
 		gait.MedianGait.percentile90 = [gait.MedianGait.percentile90 prctile(result_median_data(:,i), 90)]
 		gait.MedianGait.percentile10 = [gait.MedianGait.percentile10 prctile(result_median_data(:,i), 10)]
+		gait.MedianGait.area = [gait.MedianGait.area trapz( [1:100] , abs(result_median_data(:,i)))]
 	end
 	
 	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P10', 'P90'}
