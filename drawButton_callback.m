@@ -112,10 +112,10 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 		gait.MedianGait.area = [gait.MedianGait.area trapz( [1:100] , abs(result_median_data(:,i)))]
 	end
 	
-	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P10', 'P90', 'Max', 'Min', 'TimeToPeak',@'Area'}
-	d = [d ; 'RightAnkle', 'X', gait.MedianGait.mean(49), gait.MedianGait.median(49), gait.MedianGait.std(49), gait.MedianGait.percentile10(49), gait.MedianGait.percentile90(49) ]
-	d = [d ; 'RightAnkle', 'Y', gait.MedianGait.mean(50), gait.MedianGait.median(50), gait.MedianGait.std(50), gait.MedianGait.percentile10(50), gait.MedianGait.percentile90(50) ]
-	d = [d ; 'RightAnkle', 'Z', gait.MedianGait.mean(51), gait.MedianGait.median(51), gait.MedianGait.std(51), gait.MedianGait.percentile10(51), gait.MedianGait.percentile90(51) ]	
+	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P10', 'P90', 'Max','Min','TimeToPeak','Area'}
+	%d = [d ; 'RightAnkle', 'X', gait.MedianGait.mean(49), gait.MedianGait.median(49), gait.MedianGait.std(49), gait.MedianGait.percentile10(49), gait.MedianGait.percentile90(49) ]
+	%d = [d ; 'RightAnkle', 'Y', gait.MedianGait.mean(50), gait.MedianGait.median(50), gait.MedianGait.std(50), gait.MedianGait.percentile10(50), gait.MedianGait.percentile90(50) ]
+	%d = [d ; 'RightAnkle', 'Z', gait.MedianGait.mean(51), gait.MedianGait.median(51), gait.MedianGait.std(51), gait.MedianGait.percentile10(51), gait.MedianGait.percentile90(51) ]	
 	d(2,:) = {'LeftAnkle', 'X', gait.MedianGait.mean(61), gait.MedianGait.median(61), gait.MedianGait.std(61), gait.MedianGait.percentile10(61), gait.MedianGait.percentile90(61), gait.MedianGait.max(61), gait.MedianGait.min(61), gait.MedianGait.timetoPeak(61), gait.MedianGait.area(61) }
 	d(3,:) = {'LeftAnkle', 'Y', gait.MedianGait.mean(62), gait.MedianGait.median(62), gait.MedianGait.std(62), gait.MedianGait.percentile10(62), gait.MedianGait.percentile90(62), gait.MedianGait.max(62), gait.MedianGait.min(62), gait.MedianGait.timetoPeak(62), gait.MedianGait.area(62) }
 	d(4,:) = {'LeftAnkle', 'Z', gait.MedianGait.mean(63), gait.MedianGait.median(63), gait.MedianGait.std(63), gait.MedianGait.percentile10(63), gait.MedianGait.percentile90(63), gait.MedianGait.max(63), gait.MedianGait.min(63), gait.MedianGait.timetoPeak(63), gait.MedianGait.area(63) }
