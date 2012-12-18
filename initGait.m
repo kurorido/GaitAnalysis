@@ -19,7 +19,7 @@ function [gait] = initGait(fileName)
 	disp([treeName{1} ' ='])
 	
 	[pathstr, name, ext] = fileparts(fileName)
-	gait.id = name
+	gait.id = strcat(pathstr, name)
 	
 	% gen_object_display(tree)
 	
