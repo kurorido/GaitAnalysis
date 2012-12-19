@@ -112,7 +112,7 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 		gait.MedianGait.area = [gait.MedianGait.area trapz( [1:100] , abs(result_median_data(:,i)))]
 	end
 	
-	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P10', 'P90', 'Max','Min','TimeToPeak','Area'}
+	d = {'Joint', 'Parameter', 'Mean', 'Median', 'STDEV', 'P5', 'P95', 'Max','Min','TimeToPeak','Area'}
 	%d = [d ; 'RightAnkle', 'X', gait.MedianGait.mean(49), gait.MedianGait.median(49), gait.MedianGait.std(49), gait.MedianGait.percentile5(49), gait.MedianGait.percentile95(49) ]
 	%d = [d ; 'RightAnkle', 'Y', gait.MedianGait.mean(50), gait.MedianGait.median(50), gait.MedianGait.std(50), gait.MedianGait.percentile5(50), gait.MedianGait.percentile95(50) ]
 	%d = [d ; 'RightAnkle', 'Z', gait.MedianGait.mean(51), gait.MedianGait.median(51), gait.MedianGait.std(51), gait.MedianGait.percentile5(51), gait.MedianGait.percentile95(51) ]	
@@ -125,8 +125,8 @@ function [ gait ] = pushbutton_callback( hObject, eventdata, panel, gait, cycleS
 	d(8,:) = {'LeftHip', 'X', gait.MedianGait.mean(55), gait.MedianGait.median(55), gait.MedianGait.std(55), gait.MedianGait.percentile5(55), gait.MedianGait.percentile95(55), gait.MedianGait.max(55), gait.MedianGait.min(55), gait.MedianGait.timetoPeak(55), gait.MedianGait.area(55) }
 	d(9,:) = {'LeftHip', 'Y', gait.MedianGait.mean(56), gait.MedianGait.median(56), gait.MedianGait.std(56), gait.MedianGait.percentile5(56), gait.MedianGait.percentile95(56), gait.MedianGait.max(56), gait.MedianGait.min(56), gait.MedianGait.timetoPeak(56), gait.MedianGait.area(56) }
 	d(10,:) = {'LeftHip', 'Z', gait.MedianGait.mean(57), gait.MedianGait.median(57), gait.MedianGait.std(57), gait.MedianGait.percentile5(57), gait.MedianGait.percentile95(57), gait.MedianGait.max(57), gait.MedianGait.min(57), gait.MedianGait.timetoPeak(57), gait.MedianGait.area(57) }	
-	xlswrite(strcat(gait.id ,'.xls'), d, 'MVN-Part');
-	xlswrite(strcat(gait.id ,'.xls'), num2cell(gait.MedianGait.all_median_data), 'MVN-All');	
+	xlswrite(strcat('\', gait.id ,'.xls'), d, 'MVN-Part');
+	xlswrite(strcat('\', gait.id ,'.xls'), num2cell(gait.MedianGait.all_median_data), 'MVN-All');	
 	
 	%gait.MedianGait.mean = mean(result_median_data, 2)
 	%gait.MedianGait.median = median(result_median_data, 2)
