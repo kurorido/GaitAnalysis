@@ -8,10 +8,14 @@ classdef Gait < handle
 		RightToeOff = [];
 		DoubleSupport = [];
 		sensorAcceleration;
+		speedInfo;
+		position;
 		jointAngle;
 		frameLength;
 		MedianGait;
 		Start;
+		npose;
+		tpose;
 	end
 
 end
