@@ -14,7 +14,7 @@ function [gait] = process(gait)
 	% JX3 = RightKnee (X) 46
 	% JY3 = RightKnee (Y) 47
 	% JZ3 = RightKnee (Z) 48
-	Columns = {'Joint' 'Parameter', 'Mean', 'Median', 'STDEV', 'P5', 'P95', 'Max','Min','TimeToPeak','Area'};
+	% Columns = {'Joint' 'Parameter', 'Mean', 'Median', 'STDEV', 'P5', 'P90', 'Max','Min','TimeToPeak','Area'};
 	
 	mean_angles = mean(gait.jointAngle);
 	std_angles = std(gait.jointAngle);
@@ -23,10 +23,11 @@ function [gait] = process(gait)
 	p25_angles = prctile(gait.jointAngle, 25);
 	median_angles = median(gait.jointAngle);
 	p75_angles = prctile(gait.jointAngle, 75);
-	p95_angles = prctile(gait.jointAngle, 95);
+	p90_angles = prctile(gait.jointAngle, 90);
 	max_angles = max(gait.jointAngle);
 	IQR_angles = p75_angles - p25_angles;
 	% QD_angles = (p75_angles - p25_angles) / 2;
+	APDF_angles = p90_angles - p10_angles;
 	range_angles = max_angles - min_angles;
 	bigThanZero_angles = [];
 	for i = [1:66]
@@ -41,11 +42,11 @@ function [gait] = process(gait)
 	xlswrite(strcat(gait.id ,'.xls'), col_headers, 'Joint Angle','B1');
 	
 	% Write row headers
-	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P95'; 'Max'; 'IQR'; 'Range'; 'Bigger than 0'};
+	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P90'; 'Max'; 'IQR'; 'APDF' ;'Range'; 'Bigger than 0'};
 	xlswrite(strcat(gait.id ,'.xls'), row_headers, 'Joint Angle','A2');
 	
 	% Prepare data
-	d = [mean_angles ; std_angles; min_angles; p10_angles; p25_angles; median_angles; p75_angles; p95_angles; max_angles; IQR_angles; range_angles; bigThanZero_angles];
+	d = [mean_angles ; std_angles; min_angles; p10_angles; p25_angles; median_angles; p75_angles; p90_angles; max_angles; IQR_angles; APDF_angles ;range_angles; bigThanZero_angles];
 	
 	% Write data
 	xlswrite(strcat(gait.id ,'.xls'), d, 'Joint Angle', 'B2');
@@ -70,9 +71,10 @@ function [gait] = process(gait)
 	p25_shoulder = prctile(shoulder, 25);
 	median_shoulder = median(shoulder);
 	p75_shoulder = prctile(shoulder, 75);
-	p95_shoulder = prctile(shoulder, 95);
+	p90_shoulder = prctile(shoulder, 90);
 	max_shoulder = max(shoulder);
 	IQR_shoulder = p75_shoulder - p25_shoulder;
+	APDF_shoulder = p90_shoulder - p10_shoulder;
 	range_shoulder = max_shoulder - min_shoulder;
 	
 	% Write col headers
@@ -80,11 +82,11 @@ function [gait] = process(gait)
 	xlswrite(strcat(gait.id ,'.xls'), col_headers, 'Acromin', 'B1');
 	
 	% Write row headers
-	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P95'; 'Max'; 'IQR'; 'Range';};
+	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P90'; 'Max'; 'IQR'; 'APDF' ; 'Range';};
 	xlswrite(strcat(gait.id ,'.xls'), row_headers, 'Acromin','A2');
 	
 	% Prepare data
-	d = [mean_shoulder ; std_shoulder; min_shoulder; p10_shoulder; p25_shoulder; median_shoulder; p75_shoulder; p95_shoulder; max_shoulder; IQR_shoulder; range_shoulder];
+	d = [mean_shoulder ; std_shoulder; min_shoulder; p10_shoulder; p25_shoulder; median_shoulder; p75_shoulder; p90_shoulder; max_shoulder; IQR_shoulder; APDF_shoulder;range_shoulder];
 	
 	% Write data
 	xlswrite(strcat(gait.id ,'.xls'), d, 'Acromin', 'B2');	
@@ -109,9 +111,10 @@ function [gait] = process(gait)
 	p25_pos_diff = prctile(pos_diff, 25);
 	median_pos_diff = median(pos_diff);
 	p75_pos_diff = prctile(pos_diff, 75);
-	p95_pos_diff = prctile(pos_diff, 95);
+	p90_pos_diff = prctile(pos_diff, 90);
 	max_pos_diff = max(pos_diff);
 	IQR_pos_diff = p75_pos_diff - p25_pos_diff;
+	APDF_pos_diff = p90_pos_diff - p10_pos_diff;
 	range_pos_diff = max_pos_diff - min_pos_diff;	
 	
 	% Write col headers
@@ -119,11 +122,11 @@ function [gait] = process(gait)
 	xlswrite(strcat(gait.id ,'.xls'), col_headers, 'Pos_S', 'B1');
 	
 	% Write row headers
-	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P95'; 'Max'; 'IQR'; 'Range';};
+	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P90'; 'Max'; 'IQR'; 'APDF' ; 'Range';};
 	xlswrite(strcat(gait.id ,'.xls'), row_headers, 'Pos_S','A2');
 	
 	% Prepare data
-	d = [mean_pos_diff ; std_pos_diff; min_pos_diff; p10_pos_diff; p25_pos_diff; median_pos_diff; p75_pos_diff; p95_pos_diff; max_pos_diff; IQR_pos_diff; range_pos_diff];
+	d = [mean_pos_diff ; std_pos_diff; min_pos_diff; p10_pos_diff; p25_pos_diff; median_pos_diff; p75_pos_diff; p90_pos_diff; max_pos_diff; IQR_pos_diff; APDF_pos_diff ;range_pos_diff];
 	
 	% Write data
 	xlswrite(strcat(gait.id ,'.xls'), d, 'Pos_S', 'B2');
@@ -143,9 +146,10 @@ function [gait] = process(gait)
 	p25_c_pos_diff = prctile(c_pos_diff, 25);
 	median_c_pos_diff = median(c_pos_diff);
 	p75_c_pos_diff = prctile(c_pos_diff, 75);
-	p95_c_pos_diff = prctile(c_pos_diff, 95);
+	p90_c_pos_diff = prctile(c_pos_diff, 90);
 	max_c_pos_diff = max(c_pos_diff);
 	IQR_c_pos_diff = p75_c_pos_diff - p25_c_pos_diff;
+	APDF_c_pos_diff = p90_c_pos_diff - p10_c_pos_diff;
 	range_c_pos_diff = max_c_pos_diff - min_c_pos_diff;		
 	
 	% Write col headers
@@ -153,11 +157,11 @@ function [gait] = process(gait)
 	xlswrite(strcat(gait.id ,'.xls'), col_headers, 'C_Pos_S', 'B1');
 	
 	% Write row headers
-	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P95'; 'Max'; 'IQR'; 'Range';};
+	row_headers = {'Mean'; 'STD'; 'Min'; 'P10'; 'P25'; 'Median'; 'P75'; 'P90'; 'Max'; 'IQR'; 'APDF' ; 'Range';};
 	xlswrite(strcat(gait.id ,'.xls'), row_headers, 'C_Pos_S','A2');
 	
 	% Prepare data
-	d = [mean_c_pos_diff ; std_c_pos_diff; min_c_pos_diff; p10_c_pos_diff; p25_c_pos_diff; median_c_pos_diff; p75_c_pos_diff; p95_c_pos_diff; max_c_pos_diff; IQR_c_pos_diff; range_c_pos_diff];
+	d = [mean_c_pos_diff ; std_c_pos_diff; min_c_pos_diff; p10_c_pos_diff; p25_c_pos_diff; median_c_pos_diff; p75_c_pos_diff; p90_c_pos_diff; max_c_pos_diff; IQR_c_pos_diff; APDF_c_pos_diff ;range_c_pos_diff];
 	
 	% Write data
 	xlswrite(strcat(gait.id ,'.xls'), d, 'C_Pos_S', 'B2');	
