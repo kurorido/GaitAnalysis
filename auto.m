@@ -1,4 +1,4 @@
-TEST_CASE_FILE = 'E:\FTP\emgCode\autoSVMBuild.xlsx';
+TEST_CASE_FILE = 'D:\Roli\Dropbox\NCKU\MVN-roli\GaitAnalysis\sample\autoSVMBuild.xlsx';
 OUT_FILE_NAME = 'str_and_mat.txt';
 
 [~, ~, TEST_CASE_LIST] = xlsread(TEST_CASE_FILE);
@@ -8,16 +8,19 @@ for i = 1:size(TEST_CASE_LIST, 1)
 	
 	MVN_FILE_NAME = TEST_CASE_LIST{i, 1};
 	GAITRITE_FILE_NAME = TEST_CASE_LIST{i, 2};
-	START_TIME = 0;
-	END_TIME = 0;
+	START_TIME = TEST_CASE_LIST{i, 3};
 	
 	% Load Gait
 	gait = loadGait(MVN_FILE_NAME);
-	ZCList = findZCs(gait, START_TIME);
+	% Load GaitRite Temporal
+	eventTimes = calcEventTimeByGaitRite(START_TIME, GAITRITE_FILE_NAME);
+	
+	% The last IC event is End Time (add some frames)
+	END_TIME = eventTimes(end) + 15;
 	
 	segement_id = 7;
 	accL3_Z = [];
-	for i = 1 : endTime
+	for i = 1 : END_TIME
 		accL3_Z = [accL3_Z ; str2num(gait.acceleration{i,segement_id})];
 	end
 
@@ -25,12 +28,19 @@ for i = 1:size(TEST_CASE_LIST, 1)
 	[B,A]= butter(4,15/120,'low');
 	accL3_Z = filtfilt(B, A, accL3_Z);
 	clear A B;
-		
+	
+	% Find ZCs
+	ZCList = findZCs(gait, START_TIME);
+	
 	next = 1;
 	for i = [next:length(ZCList)/2]
 		a = 2 * i - 1;
 		b = 2 * i;
 		
+		if(ZCList(a) > END_TIME || ZCList(b) > END_TIME)
+			break;
+		end
+
 		find = false;
 		for j = [next:length(eventTimes)]
 			if(eventTimes(j) >= ZCList(a) && eventTimes(j) <= ZCList(b))
