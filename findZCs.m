@@ -24,6 +24,9 @@ for i = [2:length(accL3_Z)]
 	end
 
 	if(first)
+		if(i - ZCList(end) < 10)
+			continue;
+		end
 		if(accL3_Z(i-1) > 0 && accL3_Z(i) < 0) % second zero crossing, positive to negative
 			first = false;
 			ZCList = [ZCList i];
