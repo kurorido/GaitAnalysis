@@ -2,8 +2,8 @@
 % 20140107-morning.xlsx
 % 20140107-night.xlsx
 
-TEST_CASE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\20140107-morning.xlsx';
-OUT_FILE_NAME = '..\output.txt';
+TEST_CASE_FILE = 'autoSVMBuild.xlsx';
+OUT_FILE_NAME = 'output.txt';
 
 TOLERANCE = 10;
 
@@ -24,7 +24,8 @@ for i = 1:size(TEST_CASE_LIST, 1)
 	START_TIME = TEST_CASE_LIST{i, 3};
 	
 	% Load Gait
-	gait = loadGait(MVN_FILE_NAME);
+	%gait = loadGait(MVN_FILE_NAME);
+	load(MVN_FILE_NAME);
 	% Load GaitRite Temporal
 	eventTimes = calcEventTimeByGaitRite(START_TIME, GAITRITE_FILE_NAME);
 	
@@ -43,7 +44,7 @@ for i = 1:size(TEST_CASE_LIST, 1)
 	end
 
 	% Filter
-	[B,A]= butter(4,15/120,'low');
+	[B,A]= butter(4,5/60,'low');
 	accL3_Z = filtfilt(B, A, accL3_Z);
 	clear A B;
 	
