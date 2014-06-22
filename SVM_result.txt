@@ -1,0 +1,19 @@
+實驗一、每個 Frame 為一個 Sample，以 Pelvis, Tight Acceleration (XYZ) 和 Shank Angular Velocity (XYZ) 做為 Features
+
+Features Count: 3 + 2 * 3 + 2 * 3 = 15
+最後會分類出全都是沒有事件
+
+調高"有事件"的樣本分類 Penalty 後，沒有效果，仍然全都歸類為無事件
+
+
+實驗二、切割出 ZC 區間，ZC 區間內每 5 個 frame 為一個 Sample，以該區間之 Average 和 STD 做為 Features
+
+目前選用 Pelvis Only
+Features Count: 3 * 2 = 6
+
+正確率：62%
+
+186	41	541	779
+TP	TN	FP	FN
+
+但加入 Tight Acceleration, Shank Angular Velocity 會歸類大部分為無事件

@@ -1,7 +1,7 @@
 function events = calcEventTimeByGaitRite(START_FRAME, TEMPORAL_FILE)
 
-TEMPORAL_FILE = 'J:\Roliroli\S13\GAITRite\S13-100-1.time';
-START_FRAME = 1027;
+%TEMPORAL_FILE = 'J:\Roliroli\S13\GAITRite\S13-100-1.time';
+%START_FRAME = 1027;
 
 %TEMPORAL_FILE = GAITRITE_FILE_NAME;
 

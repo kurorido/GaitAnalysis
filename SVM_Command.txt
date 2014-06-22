@@ -1,0 +1,12 @@
+C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-scale.exe -s range train.txt > train.scale
+
+C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-scale.exe -r range test.txt > test.scale
+
+grid.py -w1 5 -w0 1 train.scale
+
+C gamma
+0.03125 0.0078125
+
+C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-train.exe -c 0.03125 -g 0.0078125 -w1 5 -w0 1 train.scale train.scale.model
+
+C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-predict.exe test.scale train.scale.model test.predict
