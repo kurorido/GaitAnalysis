@@ -1,23 +1,24 @@
-function ZCs = findZCs(gait, start)
+function ZCs = findZCs(targetFeature)
 
 % Use L3 acceleration X
-segement_id = 7;
-accL3_Z = [];
-for i = start : size(gait.sensorAcceleration, 1)
-	accL3_Z = [accL3_Z ; str2num(gait.acceleration{i,segement_id})];
-end
+% segement_id = 7;
+% targetFeature = [];
+% for i = start : size(gait.sensorAcceleration, 1)
+% 	targetFeature = [targetFeature ; str2num(gait.acceleration{i,segement_id})];
+% end
 
 % Filter
-[B,A]= butter(4,15/120,'low');
-accL3_Z = filtfilt(B, A, accL3_Z);
-clear A B;
+% [B,A]= butter(4,15/120,'low');
+% targetFeature = filtfilt(B, A, targetFeature);
+% clear A B;
 
-% find validate ZC
+zero = 0;
+
 ZCList = [];
 first = false;
-for i = [2:length(accL3_Z)]
+for i = [2:length(targetFeature)]
 	if(~first)
-		if(accL3_Z(i-1) < 0 && accL3_Z(i) > 0) % first zero crossing, negative to positive
+		if(targetFeature(i-1) < zero && targetFeature(i) > zero) % first zero crossing, negative to positive
 			first = true;
 			ZCList = [ZCList i];
 		end
@@ -27,7 +28,7 @@ for i = [2:length(accL3_Z)]
 		if(i - ZCList(end) < 10)
 			continue;
 		end
-		if(accL3_Z(i-1) > 0 && accL3_Z(i) < 0) % second zero crossing, positive to negative
+		if(targetFeature(i-1) > zero && targetFeature(i) < zero) % second zero crossing, positive to negative
 			first = false;
 			ZCList = [ZCList i];
 		end
@@ -38,13 +39,31 @@ if(mod(length(ZCList),2) ~= 0)
 	ZCList = ZCList(1:end-1);
 end
 
-ZCs = ZCList + start;
+TOLERANCE = 5;
+merge = true;
+while(merge)
+	merge = false;
+	for i = 1:length(ZCList)/2-1
+		a = 2 * i - 1;
+		b = 2 * i;
+		c = b + 1;
+		d = b + 2;
+		if ZCList(c) - ZCList(b) < TOLERANCE
+			% Combine it
+			ZCList = [ZCList(1:a) ZCList(d:end)];
+			merge = true;
+			break;
+		end
+	end
+end
+
+ZCs = ZCList;
 
 %ZCs = [];
 %for i = [1:length(ZCList)/2]
 %	a = 2 * i - 1;
 %	b = 2 * i;
-%	if(trapz(ZCList(a):ZCList(b)-1 , accL3_Z(ZCList(a):ZCList(b)-1) > 1.5))
+%	if(trapz(ZCList(a):ZCList(b)-1 , targetFeature(ZCList(a):ZCList(b)-1) > 1.5))
 %		ZCs = [ZCs ZCList(a) ZCList(b)];
 %	end
 %end

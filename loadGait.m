@@ -1,5 +1,7 @@
 function gait = loadGait(MVN_FILE_NAME)
 
+% MVN_FILE_NAME = 'C:\Users\Ergolab2\Desktop\Roliroli\MVN\Export\20140116\20140116-011_Suit 00131162.mvnx'
+
 xDoc = xmlread(MVN_FILE_NAME);
 xRoot = xDoc.getDocumentElement;
 
@@ -29,6 +31,23 @@ for i = 1 : subjectNode.getChildNodes().getLength()
 
 end
 
+% Frame Count
+frameCount = 0;
+tmp_frameNode = framesNode.getFirstChild();
+for i = 1 : framesNode.getChildNodes().getLength()
+	if(tmp_frameNode.getNodeType() == 1) % only element node
+		frameCount = frameCount + 1;
+	end
+	tmp_frameNode = tmp_frameNode.getNextSibling(); % next frame
+end
+
+% Initialize Array for speed
+%gait.sensorAcceleration = zeros(frameCount, 21);
+%gait.sensorAngularVelocity = zeros(frameCount, 21);
+%gait.acceleration = zeros(frameCount, 69);
+%gait.angularVelocity = zeros(frameCount, 69);
+%gait.angularAcceleration = zeros(frameCount, 69);
+
 % Go through all frame
 currentFrame = 0;
 frameNode = framesNode.getFirstChild();
@@ -46,20 +65,20 @@ for i = 1 : framesNode.getChildNodes().getLength()
 			if(currentFrame > 2)
 				for j = 1 : frameNode.getChildNodes().getLength() % go through frame's children
 					content = char(node.getTextContent());
-					result = textscan(content, '%s');
-					if(node.getNodeName() == 'sensorAcceleration')
+					result = textscan(content, '%f');
+					if(node.getNodeName() == 'sensorAcceleration') % 1
 						gait.sensorAcceleration(currentFrame-2, :) = result{1};
-					elseif(node.getNodeName() == 'acceleration')
+					elseif(node.getNodeName() == 'acceleration') % 2
 						gait.acceleration(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'jointAngle')
-						gait.jointAngle(currentFrame-2, :) = result{1};
-					elseif(node.getNodeName() == 'angularVelocity')
+						% gait.jointAngle(currentFrame-2, :) = result{1};
+					elseif(node.getNodeName() == 'angularVelocity') % 3
 						gait.angularVelocity(currentFrame-2, :) = result{1};
-					elseif(node.getNodeName() == 'angularAcceleration')
+					elseif(node.getNodeName() == 'angularAcceleration') % 4
 						gait.angularAcceleration(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'velocity')
-						gait.velocity(currentFrame-2, :) = result{1};
-					elseif(node.getNodeName() == 'sensorAngularVelocity')
+						% gait.velocity(currentFrame-2, :) = result{1};
+					elseif(node.getNodeName() == 'sensorAngularVelocity') % 5
 						gait.sensorAngularVelocity(currentFrame-2, :) = result{1};
 					end
 					node = node.getNextSibling(); % next attribute
@@ -69,3 +88,5 @@ for i = 1 : framesNode.getChildNodes().getLength()
 	end
 	frameNode = frameNode.getNextSibling(); % next frame
 end
+
+fprintf('End Load Gait\n');

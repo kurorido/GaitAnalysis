@@ -1,12 +1,9 @@
 % 20140116.xlsx
 % 20140107-morning.xlsx
 % 20140107-night.xlsx
-% 20140327.xlsx
 
-% extractTimeDiff
-
-TEST_CASE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\testcase\testcase.xlsx';
-OUT_FILE_NAME = '..\testcase.txt';
+TEST_CASE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\20140107-morning.xlsx';
+OUT_FILE_NAME = '..\output.txt';
 
 TOLERANCE = 0;
 
@@ -21,50 +18,52 @@ totalEventCount = 0;
 for i = 1:size(TEST_CASE_LIST, 1)
 
 	fprintf('Running Test Case %d \n', i);
-	fprintf(fid, 'Running Test Case %d \n', i);
 	
 	MVN_FILE_NAME = TEST_CASE_LIST{i, 1};
 	GAITRITE_FILE_NAME = TEST_CASE_LIST{i, 2};
 	START_TIME = TEST_CASE_LIST{i, 3};
 	
-	fprintf('%s \n', MVN_FILE_NAME);
-	fprintf('%s \n', GAITRITE_FILE_NAME);
-	
 	% Load Gait
 	gait = loadGait(MVN_FILE_NAME);
 	% Load GaitRite Temporal
-	eventTimes = calcEventTimeByGaitRite(GAITRITE_FILE_NAME);
-	eventTimes = eventTimes + START_TIME;
+	eventTimes = calcEventTimeByGaitRite(START_TIME, GAITRITE_FILE_NAME);
 	
 	% The last IC event is End Time (add some frames)
 	END_TIME = eventTimes(end);
-	if(END_TIME > size(gait.acceleration, 1))
-		END_TIME = size(gait.acceleration, 1);
+	if(END_TIME > size(gait.sensorAngularVelocity, 1))
+		END_TIME = size(gait.sensorAngularVelocity, 1);
 	end
-	eventTimes = eventTimes(2:end); % Don't use first event
 	eventTimes = eventTimes(1:end-1); % Don't use last event
+	eventTimes = eventTimes(2:end); % Don't use first event
 	totalEventCount = length(eventTimes) + totalEventCount;
 	
-	segement_id = 3;
-	targetFeature = zeros(END_TIME - START_TIME + 1, 1);
-	for j = START_TIME : END_TIME
-		targetFeature(j - START_TIME + 1, 1) = gait.sensorAcceleration(j,segement_id);
+	sensor_id = 3;
+	angularVelocity_Pelvis_Z = [];
+	for j = 1 : END_TIME
+		angularVelocity_Pelvis_Z = [angularVelocity_Pelvis_Z ; str2num(gait.sensorAngularVelocity{j,sensor_id})];
 	end
 
 	% Filter
-	%[B,A]= butter(4,15/120,'low');
-	%targetFeature = filtfilt(B, A, targetFeature);
-	%clear A B;
+	[B,A]= butter(4,15/120,'low');
+	angularVelocity_Pelvis_Z = filtfilt(B, A, angularVelocity_Pelvis_Z);
+	clear A B;
+	
+	% Absolute
+	% angularVelocity_Pelvis_Z = abs(angularVelocity_Pelvis_Z);
 	
 	% Find ZCs
-	ZCList = findZCs(targetFeature);
-	ZCList = ZCList + START_TIME - 2; % Shift 2
+	ZCList = splitWithZCs(gait, START_TIME);
 	
 	usedEvent = [];
 	next = 1;
 	for j = 1:length(ZCList)/2
 		a = 2 * j - 1;
 		b = 2 * j;
+		
+		% Don't calculate those Range Size < 2
+		if(ZCList(b) - ZCList(a) < 2)
+			continue;
+		end		
 		
 		if(ZCList(a) > END_TIME || ZCList(b) > END_TIME)
 			break;
@@ -79,21 +78,19 @@ for i = 1:size(TEST_CASE_LIST, 1)
 			end
 		end
 		
-		x = ZCList(a)-START_TIME+1:ZCList(b)-START_TIME-1;
-		
 		if(find)
 			% For debug
 			% fprintf(fid, '%d ----- %d ~ %d ', eventTimes(k), ZCList(a), ZCList(b));
 			
-			fprintf(fid,'1 1:%5f', trapz(x , targetFeature(x)));
-			fprintf(fid, ' 2:%5f', max(targetFeature(x)));
+			fprintf(fid,'1 1:%5f', trapz(ZCList(a):ZCList(b)-1 , angularVelocity_Pelvis_Z(ZCList(a):ZCList(b)-1)));
+			fprintf(fid, ' 2:%5f', max(angularVelocity_Pelvis_Z(ZCList(a):ZCList(b)-1)));
 			fprintf(fid, '\r\n');	
 		else
 			% For debug
 			% fprintf(fid, '0 ----- %d ~ %d ', ZCList(a), ZCList(b));
 		
-			fprintf(fid,'0 1:%5f', trapz(x , targetFeature(x)));
-			fprintf(fid, ' 2:%5f', max(targetFeature(x)));
+			fprintf(fid,'0 1:%5f', trapz(ZCList(a):ZCList(b)-1 , angularVelocity_Pelvis_Z(ZCList(a):ZCList(b)-1)));
+			fprintf(fid, ' 2:%5f', max(angularVelocity_Pelvis_Z(ZCList(a):ZCList(b)-1)));
 			fprintf(fid, '\r\n');	
 		end
 	end	

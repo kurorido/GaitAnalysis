@@ -1,4 +1,4 @@
-function RESULT = calcEventTimeByGaitRite(START_FRAME, TEMPORAL_FILE)
+function RESULT = calcEventTimeByGaitRite(TEMPORAL_FILE)
 
 % TEMPORAL_FILE = '20140106-01.txt';
 % START_FRAME = 652;
@@ -25,7 +25,7 @@ for i = 1:length(TEMPORAL_LIST) - 1
 end
 
 RESULT = zeros(1, length(TEMPORAL_LIST));
-CURRENT = START_FRAME;
+CURRENT = 0;
 RESULT(1) = CURRENT;
 for i = 1:length(FRAME_DIFF)
 	CURRENT = CURRENT + FRAME_DIFF(i);
