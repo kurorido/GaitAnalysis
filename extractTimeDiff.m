@@ -3,8 +3,8 @@
 % 20140107-night.xlsx
 % 20140327.xlsx
 
-TEST_CASE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\testcase\20140327-new.xlsx';
-OUT_FILE_NAME = '..\20140327-new-times.txt';
+TEST_CASE_FILE = 'C:\Users\Roliroli\Dropbox\NCKU\MVN-roli\GaitAnalysis\autoSVMBuild.xlsx';
+OUT_FILE_NAME = '.\times.txt';
 
 [~, ~, TEST_CASE_LIST] = xlsread(TEST_CASE_FILE);
 fid = fopen(OUT_FILE_NAME,'w');
