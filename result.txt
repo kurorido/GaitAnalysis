@@ -1,0 +1,13 @@
+
+Frame Diff
+Proposed Method 3.7 (2.7)
+Foot 19.4 (4.7)
+Pelvis 5.4 (4.5)
+Shank 9.7 (8.4)
+Tight 2.3 (6.9)
+
+Proposed Method 4 (3.7)
+Foot 16.1 (9.2)
+Pelvis 2.7 (8.0)
+Shank 6.8 (11)
+Tight 0.86 (7.8)

@@ -17,15 +17,14 @@ for i = 1:size(TEST_CASE_LIST, 1)
 		acceleration(j) = str2num(gait.acceleration{j+startTime,segement_id});
 	end
 
-
 	[B,A]= butter(4, 5/60, 'low');
 	acceleration = filtfilt(B, A, acceleration);
 
-	[pks,locs] = findpeaks(acceleration);
+	[pks,locs] = findpeaks(acceleration, 'MINPEAKHEIGHT', 1);
 	plot(1:endTime-startTime+1, acceleration); hold on;
 	plot(locs,pks+0.05,'k^','markerfacecolor',[1 0 0]), hold off
 
 	% Ouput candiate frame number
-	dlmwrite(strcat('S01-', int2str(i)), locs + startTime)
+	dlmwrite(strcat('S03-', int2str(i)), locs + startTime)
 
 end

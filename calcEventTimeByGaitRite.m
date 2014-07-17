@@ -21,23 +21,29 @@ TEMPORAL_LIST = sort(TEMPORAL_LIST, 'ascend');
 %TEMPORAL_LIST = transpose(unique(TEMPORAL_LIST));
 %fclose(fid);
 
-FRAME_DIFF = zeros(1, length(TEMPORAL_LIST)-1);
-for i = 1:length(TEMPORAL_LIST) - 1
-	FRAME_DIFF(i) = floor((TEMPORAL_LIST(i+1) - TEMPORAL_LIST(i)) / 0.008);	
-end
+%FRAME_DIFF = zeros(1, length(TEMPORAL_LIST)-1);
+%for i = 1:length(TEMPORAL_LIST) - 1
+%	FRAME_DIFF(i) = floor((TEMPORAL_LIST(i+1) - TEMPORAL_LIST(i)) / 0.008);	
+%end
+%
+%RESULT = zeros(1, length(TEMPORAL_LIST));
+%CURRENT = 0;
+%RESULT(1) = CURRENT;
+%for i = 1:length(FRAME_DIFF)
+%	CURRENT = CURRENT + FRAME_DIFF(i);
+%	RESULT(i+1) = CURRENT;
+%end
+IC_STARTTIME = TEMPORAL_LIST(1);
 
-RESULT = zeros(1, length(TEMPORAL_LIST));
-CURRENT = 0;
-RESULT(1) = CURRENT;
-for i = 1:length(FRAME_DIFF)
-	CURRENT = CURRENT + FRAME_DIFF(i);
-	RESULT(i+1) = CURRENT;
-end
+TEMPORAL_LIST = TEMPORAL_LIST - IC_STARTTIME;
+TEMPORAL_LIST = TEMPORAL_LIST(2:end);
+TEMPORAL_LIST = (TEMPORAL_LIST / 0.008); % Frame Diff
+RESULT = round(TEMPORAL_LIST + START_FRAME); % Add START
 
 events.ICs = RESULT;
 
 %%%%%% TO
-IC_STARTTIME = TEMPORAL_LIST(1);
+
 TEMPORAL_LIST = [transpose(s.Left_Off) transpose(s.Right_Off)];
 TEMPORAL_LIST = sort(TEMPORAL_LIST, 'ascend');
 TEMPORAL_LIST = TEMPORAL_LIST - IC_STARTTIME; % Now the toe off is base on First IC

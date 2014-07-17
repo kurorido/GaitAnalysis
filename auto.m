@@ -4,8 +4,8 @@
 % 20140327.xlsx
 % extractTimeDiff
 
-TEST_CASE_FILE = 'J:\Roliroli\S01\L3PeakBuild.xlsx';
-OUT_FILE_NAME = 'J:\Roliroli\S01\TwoClass-L3Peak-Range5-15Feature.txt';
+TEST_CASE_FILE = 'J:\Roliroli\S02\L3PeakBuild.xlsx';
+OUT_FILE_NAME = 'J:\Roliroli\S02\TwoClass-L3Peak-Range10-3Feature.txt';
 
 [~, ~, TEST_CASE_LIST] = xlsread(TEST_CASE_FILE);
 fid = fopen(OUT_FILE_NAME,'w');
@@ -96,7 +96,10 @@ for i = 1:size(TEST_CASE_LIST, 1)
 			%	WriteFeaturesFragment;
 			%	eventTime = eventTime + k; % restore
 			%end
-			step = 5;
+			
+			
+			
+			step = 10;
 			for k = ZCList(a) : step : ZCList(b) - step
 				START_POINT = k;
 				END_POINT = START_POINT + step - 1;
