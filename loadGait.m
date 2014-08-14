@@ -1,7 +1,7 @@
 function gait = loadGait(MVN_FILE_NAME)
 
 % MVN_FILE_NAME = 'C:\Users\Ergolab2\Desktop\Roliroli\MVN\Export\20140116\20140116-011_Suit 00131162.mvnx'
-MVN_FILE_NAME = 'C:\Users\ErgoLab-MVN\Desktop\demo\sb-111001-2T-000-2-002.mvnx'
+% MVN_FILE_NAME = 'C:\Users\ErgoLab-MVN\Desktop\demo\sb-111001-2T-000-2-002.mvnx'
 
 xDoc = xmlread(MVN_FILE_NAME);
 xRoot = xDoc.getDocumentElement;
