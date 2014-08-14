@@ -11,7 +11,7 @@ C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-train.exe -c 0.03125 
 
 C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-predict.exe test.scale train.scale.model test.predict
 
-C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-train.exe -s 3 -p 0.0078125 -t 2 -g 1.0 -c 64.0 train.scale train.scale.model
+C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-train.exe -s 3 -p 0.5 -t 2 -g 1.0 -c 64.0 train.scale train.scale.model
 
 c  g  p  MSE
 64.0 1.0 0.0625 0.0118463
@@ -20,4 +20,5 @@ c  g  p  MSE
 
 gridregression.py train.scale
 
-64.0 1.0 0.0078125
+64.0 1.0 0.25 4882.76
+64.0 1.0 0.0078125 39.2277

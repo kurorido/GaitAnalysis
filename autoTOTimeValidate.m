@@ -1,0 +1,17 @@
+validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+for case_ind = 1 : length(validate)
+
+	subjectNum = validate(case_ind);
+
+	if( subjectNum < 10 )
+		number = strcat('0', int2str(subjectNum));
+	else
+		number = int2str(subjectNum);
+	end
+
+	ROOT_DIR = strcat('J:\Roliroli\S', number,'\TO-Time\');
+	OUT_DIR = strcat('J:\Roliroli\S', number,'\TO-Time-Validated\');
+	mkdir(OUT_DIR);
+	autoTimeValidate;
+	
+end

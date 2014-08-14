@@ -16,8 +16,8 @@ for i = 1:size(TEST_CASE_LIST, 1)
 		end
 		
 		% We need suite name in some file name
-		%FILENAME = strcat('J:\Roliroli\', SUBJECT_NAME, '\MVN Export\', SUBJECT_NAME ,'-0',number, '_Suit 00131162.mvnx');
-		FILENAME = strcat('J:\Roliroli\', SUBJECT_NAME, '\MVN Export\', SUBJECT_NAME ,'-0', number, '.mvnx');
+		FILENAME = strcat('J:\Roliroli\', SUBJECT_NAME, '\MVN Export\', SUBJECT_NAME ,'-0',number, '_Suit 00131162.mvnx');
+		%FILENAME = strcat('J:\Roliroli\', SUBJECT_NAME, '\MVN Export\', SUBJECT_NAME ,'-0', number, '.mvnx');
 		OUTFILENAME = strcat('J:\Roliroli\', SUBJECT_NAME,'\Matlab\', SUBJECT_NAME ,'-0' , number);
 		
 		fileInfo = dir(FILENAME);

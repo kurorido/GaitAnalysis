@@ -71,17 +71,19 @@ for i = 1 : framesNode.getChildNodes().getLength()
 					elseif(node.getNodeName() == 'acceleration') % 2
 						gait.acceleration(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'jointAngle')
-						gait.jointAngle(currentFrame-2, :) = result{1};
+						% gait.jointAngle(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'angularVelocity') % 3
 						gait.angularVelocity(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'angularAcceleration') % 4
 						gait.angularAcceleration(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'velocity')
-						gait.velocity(currentFrame-2, :) = result{1};
+						% gait.velocity(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'sensorAngularVelocity') % 5
 						gait.sensorAngularVelocity(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'centerOfMass')
 						gait.centerOfMass(currentFrame-2, :) = result{1};
+					elseif(node.getNodeName() == 'jointAngle')
+						gait.jointAngle(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'jointAngleXZY')
 						gait.jointAngleXZY(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'position')
@@ -95,3 +97,5 @@ for i = 1 : framesNode.getChildNodes().getLength()
 	end
 	frameNode = frameNode.getNextSibling(); % next frame
 end
+
+fprintf('End Load Gait\n');

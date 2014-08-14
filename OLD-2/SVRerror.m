@@ -1,16 +1,16 @@
-PREDTOT_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\test.predict';
-ROOT_DIR = 'J:\Roliroli\S08';
+PREDICT_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\test.predict';
+ROOT_DIR = 'J:\Roliroli\S25';
 
-predictLabels = load(PREDTOT_FILE);
+predictLabels = load(PREDICT_FILE);
 
 errors = [];
 currentLen = 1;
 
 for i = 1 : 30
 
-	range = load(strcat(ROOT_DIR,'\TO-Range\TO-Range-', int2str(i), '.txt'));
+	range = load(strcat(ROOT_DIR,'\IC-Range\IC-Range-', int2str(i), '.txt'));
 	
-	GAITRiteTimes = load(strcat(ROOT_DIR,'\TO-Time-Indent\','GAITRiteTime-', int2str(i), '.txt'));
+	GAITRiteTimes = load(strcat(ROOT_DIR,'\IC-Time-Validated\','GAITRiteTime-', int2str(i), '.txt'));
 	
 	Time = [];
 	
@@ -24,7 +24,10 @@ for i = 1 : 30
 	 	ind = find(abs(predictSet)==abs(min(predictSet)));
 	 	ind = ind(1);
 		
-		error = (GAITRiteTimes(j) - START_TIME + ind);
+		%figure;
+		%plot(1:length(predictSet), predictSet);
+		
+		error = (GAITRiteTimes(j) - START_TIME - ind);
 	 	
 	 	errors = [errors error];
 		
@@ -35,7 +38,7 @@ for i = 1 : 30
 		Time = [Time t];
 	end
 
-	dlmwrite(strcat(ROOT_DIR, '\SVRTime-', int2str(i), '.txt'), Time);
+	%dlmwrite(strcat(ROOT_DIR, '\SVRTime-', int2str(i), '.txt'), Time);
 end
 %range = 9;
 %

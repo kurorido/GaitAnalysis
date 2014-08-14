@@ -1,0 +1,10 @@
+ans = [];
+for i = 2 : 4
+	ans = [ans ;load(strcat('J:\Roliroli\S0', int2str(i),'\TO-Correlation.txt'))];
+end
+%ans(:,1) = ans(:,1) / 8.33;
+allR = [];
+for i = 2 : size(ans, 2)
+	result = corrcoef(ans(:,1), ans(:,i));
+	allR = [allR result(1,2)];
+end
