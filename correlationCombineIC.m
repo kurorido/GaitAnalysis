@@ -10,7 +10,7 @@ for case_ind = 1 : length(validate)
 		number = int2str(subjectNum);
 	end
 	
-	CORRELATION_DIR = strcat('J:\Roliroli\S', number,'\Correlation\');
+	CORRELATION_DIR = strcat('J:\Roliroli\S', number,'\');
 	FILE_NAME = strcat(CORRELATION_DIR, 'Correlation-IC.txt');
 	tmp = load(FILE_NAME);
 	
@@ -20,7 +20,7 @@ end
 
 RESULT = [];
 
-for i = 1 : 129
+for i = 1 : 192
 	ans = corrcoef(OUT(:,1), OUT(:, i+1));
 	RESULT = [RESULT ans(1,2)];
 end

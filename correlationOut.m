@@ -153,9 +153,73 @@ for i = 1:30
 			fprintf(fid,'%.3f ', jLeftAnkle_Z(k));
 			fprintf(fid,'%.3f ', jLeftBallFoot_X(k));
 			fprintf(fid,'%.3f ', jLeftBallFoot_Y(k));
-			fprintf(fid,'%.3f\r\n', jLeftBallFoot_Z(k));
-		end
-	end
-end
+			fprintf(fid,'%.3f ', jLeftBallFoot_Z(k));
+			fprintf(fid, '%.3f ',Deriv_LeftFoot_X(k));
+			fprintf(fid, '%.3f ',Deriv_LeftFoot_Y(k)); 
+			fprintf(fid, '%.3f ',Deriv_LeftFoot_Z(k)); 
+			fprintf(fid, '%.3f ',Deriv2_LeftFoot_X(k));
+			fprintf(fid, '%.3f ',Deriv2_LeftFoot_Y(k));
+			fprintf(fid, '%.3f ',Deriv2_LeftFoot_Z(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftFoot_X(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftFoot_Y(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftFoot_Z(k));
+			fprintf(fid, '%.3f ',Deriv_RightFoot_X(k)); 
+			fprintf(fid, '%.3f ',Deriv_RightFoot_Y(k)); 
+			fprintf(fid, '%.3f ',Deriv_RightFoot_Z(k)); 
+			fprintf(fid, '%.3f ',Deriv2_RightFoot_X(k));
+			fprintf(fid, '%.3f ',Deriv2_RightFoot_Y(k));
+			fprintf(fid, '%.3f ',Deriv2_RightFoot_Z(k));
+			fprintf(fid, '%.3f ',Deriv4_RightFoot_X(k));
+			fprintf(fid, '%.3f ',Deriv4_RightFoot_Y(k));
+			fprintf(fid, '%.3f ',Deriv4_RightFoot_Z(k));
+			fprintf(fid, '%.3f ',Deriv_LeftLowerLeg_X(k)); 
+			fprintf(fid, '%.3f ',Deriv_LeftLowerLeg_Y(k)); 
+			fprintf(fid, '%.3f ',Deriv_LeftLowerLeg_Z(k)); 
+			fprintf(fid, '%.3f ',Deriv2_LeftLowerLeg_X(k));
+			fprintf(fid, '%.3f ',Deriv2_LeftLowerLeg_Y(k));
+			fprintf(fid, '%.3f ',Deriv2_LeftLowerLeg_Z(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftLowerLeg_X(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftLowerLeg_Y(k));
+			fprintf(fid, '%.3f ',Deriv4_LeftLowerLeg_Z(k));
+			fprintf(fid, '%.3f ',Deriv_RightLowerLeg_X(k)); 
+			fprintf(fid, '%.3f ',Deriv_RightLowerLeg_Y(k)); 
+			fprintf(fid, '%.3f ',Deriv_RightLowerLeg_Z(k)); 
+			fprintf(fid, '%.3f ',Deriv2_RightLowerLeg_X(k));
+			fprintf(fid, '%.3f ',Deriv2_RightLowerLeg_Y(k));
+			fprintf(fid, '%.3f ',Deriv2_RightLowerLeg_Z(k));
+			fprintf(fid, '%.3f ',Deriv4_RightLowerLeg_X(k));
+			fprintf(fid, '%.3f ',Deriv4_RightLowerLeg_Y(k));
+			fprintf(fid, '%.3f ',Deriv4_RightLowerLeg_Z(k));
+			fprintf(fid, '%.3f ',Deriv_LeftUpperLeg_X(k)); 
+			fprintf(fid, '%.3f ',Deriv_LeftUpperLeg_Y(k)); 
+			fprintf(fid, '%.3f ',Deriv_LeftUpperLeg_Z(k)); 
+			fprintf(fid,'%.3f ', Deriv2_LeftUpperLeg_X(k));
+			fprintf(fid,'%.3f ', Deriv2_LeftUpperLeg_Y(k));
+			fprintf(fid,'%.3f ', Deriv2_LeftUpperLeg_Z(k));
+			fprintf(fid,'%.3f ', Deriv4_LeftUpperLeg_X(k));
+			fprintf(fid,'%.3f ', Deriv4_LeftUpperLeg_Y(k));
+			fprintf(fid,'%.3f ', Deriv4_LeftUpperLeg_Z(k));
+			fprintf(fid,'%.3f ', Deriv_RightUpperLeg_X(k));
+			fprintf(fid,'%.3f ', Deriv_RightUpperLeg_Y(k)); 
+			fprintf(fid,'%.3f ', Deriv_RightUpperLeg_Z(k)); 
+			fprintf(fid,'%.3f ', Deriv2_RightUpperLeg_X(k));
+			fprintf(fid,'%.3f ', Deriv2_RightUpperLeg_Y(k));
+			fprintf(fid,'%.3f ', Deriv2_RightUpperLeg_Z(k));
+			fprintf(fid,'%.3f ', Deriv4_RightUpperLeg_X(k));
+			fprintf(fid,'%.3f ', Deriv4_RightUpperLeg_Y(k));
+			fprintf(fid,'%.3f ', Deriv4_RightUpperLeg_Z(k));
+			fprintf(fid,'%.3f ', Deriv_Pelvis_X(k)); 
+			fprintf(fid,'%.3f ', Deriv_Pelvis_Y(k)); 
+			fprintf(fid,'%.3f ', Deriv_Pelvis_Z(k)); 
+			fprintf(fid,'%.3f ', Deriv2_Pelvis_X(k));
+			fprintf(fid,'%.3f ', Deriv2_Pelvis_Y(k));
+			fprintf(fid,'%.3f ', Deriv2_Pelvis_Z(k));
+			fprintf(fid,'%.3f ', Deriv4_Pelvis_X(k));
+			fprintf(fid,'%.3f ', Deriv4_Pelvis_Y(k));
+			fprintf(fid,'%.3f\r\n', Deriv4_Pelvis_Z(k));
+			
+		end 
+	end     
+end         
 fclose(fid);
-fclose all;
+fclose all; 

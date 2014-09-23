@@ -1,6 +1,7 @@
-Combination = 5;
+Combination = 6;
 
-validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+%validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+validate = [1:8];
 for case_ind = 1 : length(validate)
 
 	subjectNum = validate(case_ind);

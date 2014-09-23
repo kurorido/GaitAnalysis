@@ -114,7 +114,9 @@ Acceleration_RightFoot_Y = gait.acceleration(:, 53);
 Acceleration_RightFoot_Z = gait.acceleration(:, 54);
 AngularVelocity_RightFoot_X = gait.angularVelocity(:, 52);
 AngularVelocity_RightFoot_Y = gait.angularVelocity(:, 53);
-AngularVelocity_RightFoot_Z = gait.angularVelocity(:, 54);			
+AngularVelocity_RightFoot_Z = gait.angularVelocity(:, 54);
+
+Position_RightFoot_X = gait.position(:, 52);
 
 % Left Foot
 Acceleration_LeftFoot_X = gait.acceleration(:, 64);
@@ -123,7 +125,8 @@ Acceleration_LeftFoot_Z = gait.acceleration(:, 66);
 AngularVelocity_LeftFoot_X = gait.angularVelocity(:, 64);
 AngularVelocity_LeftFoot_Y = gait.angularVelocity(:, 65);
 AngularVelocity_LeftFoot_Z = gait.angularVelocity(:, 66);			
-		
+
+Position_LeftFoot_X = gait.position(:, 64);
 		
 % Pelvis
 Acceleration_Pelvis_X = filterTool(Acceleration_Pelvis_X);

@@ -1,6 +1,7 @@
 Combination = 2;
 
 validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+%validate = [1:8];
 for case_ind = 1 : length(validate)
 
 	subjectNum = validate(case_ind);
@@ -59,6 +60,16 @@ for case_ind = 1 : length(validate)
 			cycle = GAITRiteTimes(5) - GAITRiteTimes(1);
 			stance = GAITRiteTimes(4) - GAITRiteTimes(1);
 			swing = GAITRiteTimes(5) - GAITRiteTimes(4);
+			double1_len = GAITRiteTimes(2) - GAITRiteTimes(1);
+			double2_len = GAITRiteTimes(4) - GAITRiteTimes(3);
+			
+			svr_double1_len = svrTimes(2) - svrTimes(1);
+			svr_double2_len = svrTimes(4) - svrTimes(3);
+			
+			error_double1 = abs(double1_len - svr_double1_len);
+			error_double2 = abs(double2_len - svr_double2_len);
+			
+			error_double = mean([error_double1 error_double2]);
 			
 			svr_ic = GAITRiteTimes(1) - svrTimes(1);
 			svr_to = GAITRiteTimes(4) - svrTimes(4);
@@ -94,7 +105,7 @@ for case_ind = 1 : length(validate)
 				stance_diff = stance_diff * mutipiler;
 			end
 			
-			append = [svr_ic svr_ic_abs svr_to svr_to_abs stance_diff swing_diff];
+			append = [svr_ic svr_ic_abs svr_to svr_to_abs stance_diff swing_diff error_double];
 			
 			GAITRITE_FILE_NAME = TEST_CASE_LIST{i, 2};
 			if(~isempty(strfind(GAITRITE_FILE_NAME, 'Self')))
@@ -115,7 +126,7 @@ for case_ind = 1 : length(validate)
 	OUT_120 = [];
 	OUT_All = [];
 	
-	for k = 1 : 6
+	for k = 1 : 7
 	
 		OUT_Self = [OUT_Self mean(TEMP_Self(:, k)) std(TEMP_Self(:, k))];
 		OUT_100 = [OUT_100 mean(TEMP_100(:, k)) std(TEMP_100(:, k))];

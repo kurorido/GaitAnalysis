@@ -2,9 +2,10 @@ SVM_PREDICT_EXE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-pr
 SVM_SCALE_EXE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-scale.exe';
 SCALE_RANGE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\range';
 MODEL_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\train.scale.model';
-Combination = 5;
+Combination = 6;
 %validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
-validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+%validate = [1:8, 12, 14:15, 17:20, 22, 24:27, 29];
+validate = [1:8];
 for case_ind = 1 : length(validate)
 
 	subjectNum = validate(case_ind);
