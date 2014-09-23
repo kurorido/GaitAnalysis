@@ -1,6 +1,7 @@
 function gait = loadGait(MVN_FILE_NAME)
 
 % MVN_FILE_NAME = 'C:\Users\Ergolab2\Desktop\Roliroli\MVN\Export\20140116\20140116-011_Suit 00131162.mvnx'
+% MVN_FILE_NAME = 'C:\Users\ErgoLab-MVN\Desktop\demo\sb-111001-2T-000-2-002.mvnx'
 
 xDoc = xmlread(MVN_FILE_NAME);
 xRoot = xDoc.getDocumentElement;
@@ -48,18 +49,19 @@ end
 %gait.angularVelocity = zeros(frameCount, 69);
 %gait.angularAcceleration = zeros(frameCount, 69);
 
+% For marker
+gait.marker = [];
+
 % Go through all frame
 currentFrame = 0;
 frameNode = framesNode.getFirstChild();
 for i = 1 : framesNode.getChildNodes().getLength()
 	if(frameNode.getNodeType() == 1) % only element node
+		
 		node = frameNode.getFirstChild();
-		
-		%attrs = node.getAttributes();
-		%timeNode = attrs.getNamedItem('time');
-		%time = timeNode.getNodeValue();
+
 		if(frameNode.getNodeName() == 'frame') % a frame
-		
+
 			currentFrame = currentFrame + 1;
 			
 			if(currentFrame > 2)
@@ -86,6 +88,10 @@ for i = 1 : framesNode.getChildNodes().getLength()
 						gait.jointAngleXZY(currentFrame-2, :) = result{1};
 					elseif(node.getNodeName() == 'position')
 						gait.position(currentFrame-2, :) = result{1};
+					elseif(node.getNodeName() == 'marker')
+						% Parse index only when need
+						index = str2double(cell(frameNode.getAttributes().getNamedItem('index').getValue()));
+						gait.marker = [gait.marker index];
 					end
 					node = node.getNextSibling(); % next attribute
 					
