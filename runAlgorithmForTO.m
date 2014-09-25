@@ -94,19 +94,6 @@ if(draw)
 	figure('name',strcat('Right Lower Leg-', int2str(i)));
 	plot(1:END_TIME, target); hold on;
 end
-am = [];
-mx = [];
-
-for index = 1 : length(locs)
-	if(locs(index) + 50 < END_TIME)
-		[am(index), mx(index)] = min(target(locs(index):locs(index)+50));
-		mx(index) = mx(index) + locs(index);
-	end
-end
-
-if(draw)
-	plot(mx,am+0.05,'k^','markerfacecolor',[1 0 0], 'MarkerSize', 12);
-end
 
 am = [];
 mx = [];

@@ -144,6 +144,10 @@ pelvisIC = pelvisIC(1:len);
 shankIC = shankIC(1:len);
 footIC = footIC(1:len);
 
+pelvisIC = reshape(pelvisIC, 1, length(pelvisIC));
+shankIC = reshape(shankIC, 1, length(shankIC));
+footIC = reshape(footIC, 1, length(footIC));
+
 
 fid = fopen(strcat(ROOT_DIR, 'ic_sample.txt'),'w');
 for i = 1 : len - 1
@@ -168,10 +172,10 @@ end
 fclose(fid);
 fclose all;
 
-SVM_PREDICT_EXE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-predict.exe';
-SVM_SCALE_EXE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\windows\svm-scale.exe';
-SCALE_RANGE_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\range';
-MODEL_FILE = 'C:\Users\Ergolab2\Desktop\Roliroli\libsvm-3.17\tools\train.scale.model';
+SVM_PREDICT_EXE = 'J:\Roliroli-Gait\GaitAnalysis\yao\libsvm-3.17\windows\svm-predict.exe';
+SVM_SCALE_EXE = 'J:\Roliroli-Gait\GaitAnalysis\yao\libsvm-3.17\windows\svm-scale.exe';
+SCALE_RANGE_FILE = 'J:\Roliroli-Gait\GaitAnalysis\yao\libsvm-3.17\tools\range';
+MODEL_FILE = 'J:\Roliroli-Gait\GaitAnalysis\yao\libsvm-3.17\tools\train.scale.model';
 
 PREDICT_FILE = strcat(ROOT_DIR, 'test.predict');
 TEST_FILE = strcat(ROOT_DIR, 'ic_sample.txt');	
@@ -207,3 +211,5 @@ for i = 1 : len - 1
 	Time = [Time t];			
 
 end
+
+svrIC = Time;

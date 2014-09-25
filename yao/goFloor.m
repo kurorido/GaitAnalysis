@@ -1,7 +1,8 @@
-method = 2;
+method = 4;
 
 ROOT_DIR = 'J:\Roliroli-Gait\GaitAnalysis\yao\';
-DATA_NAME = 'sb-111001-1L-000-1';
+%DATA_NAME = 'sb-111001-1L-000-1';
+DATA_NAME = 'sb-111003-1L-T20-2';
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,15 +19,26 @@ normalize = false;
 draw = false;
 FeatureInit;
 runIC;
+runTO;
+
+% Base on IC to truncate TO
+pelvisTO = truncateTO(pelvisIC, pelvisTO);
+shankTO = truncateTO(shankIC, shankTO);
+footTO = truncateTO(footIC, footTO);
+svrTO = truncateTO(svrIC, svrTO);
 
 if method == 1
-	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), pelvisIC);
+	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), pelvisIC+10);
+	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), pelvisTO);
 elseif method == 2
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), shankIC);
+	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), shankTO);
 elseif method == 3
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), footIC);
+	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), footTO);
 else
-	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), Time);
+	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), svrIC);
+	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), svrTO);
 end
 
 startContact = 7;
@@ -35,6 +47,7 @@ endContact = 15;
 leftFirst = false;
 
 IC_TIMES = load(strcat(DATA_DIR, '\ic_time.txt'));
+TO_TIMES = load(strcat(DATA_DIR, '\to_time.txt'));
 
 s = IC_TIMES(startContact);
 e = IC_TIMES(startContact+2);
@@ -94,16 +107,31 @@ cycle = 1;
 for j = startContact : 2 : endContact
 
 	s = IC_TIMES(j);
-	e = IC_TIMES(j+2);	
+	e = IC_TIMES(j+2);
+	
+	st = TO_TIMES(j);
+	et = TO_TIMES(j+1);
 	
 	target = gait.jointAngle(s:e, ankleZ);
 	target = resample(target, 101, length(target));
-
+    
 	figure('name', strcat('Cycle-', int2str(cycle)));
 	hold on;
 	axis([0 101 -40 40]);
 	plot(1:101, target);
 	hold off;
+	
+	%target = gait.jointAngle(s:e, ankleZ);
+    %
+	%figure('name', strcat('Cycle-', int2str(cycle)));
+	%hold on;
+	%axis([0 length(target) min(target)*1.5 max(target)*1.5]);
+	%plot(1:length(target), target);
+    %
+	%line([st-s st-s], [max(target)*1.5 min(target)*1.5], 'Color','r');
+	%line([et-s et-s], [max(target)*1.5 min(target)*1.5], 'Color','r');
+	%
+	%hold off;
 	
 	cycle = cycle + 1;
 
