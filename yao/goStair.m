@@ -1,13 +1,9 @@
-ROOT_DIR = 'J:\Roliroli-Gait\GaitAnalysis\yao\stair\';
-DATA_NAME = 'sb-121002-2T-000-1-001';
-markerFileName = 'J:\Roliroli-Gait\GaitAnalysis\yao\stair\sb-121002-2T-000-1-001.xlsx';
+init;
+mode = stair;
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 DATA_DIR = strcat(ROOT_DIR, DATA_NAME); 
-mkdir(DATA_DIR); % Create a directory for subject
+%mkdir(strcat(DATA_DIR, '-', modeArr{mode})); % Create a directory for subject
 
-stair = true;
 load(strcat(ROOT_DIR, DATA_NAME));
 
 normalize = false;
@@ -16,6 +12,10 @@ FeatureInit;
 
 START_TIME = 1;
 END_TIME = size(gait.acceleration, 1);
+
+normalize = false;
+draw = false;
+FeatureInit;
 
 markerData = xlsread(markerFileName);
 
@@ -75,14 +75,14 @@ IC_TIMES = RightInitialContact;
 %endContact = ind;
 
 cylcesToPlot = [3,4,7,8];
-cycle = 1;
-for j = 1 : length(IC_TIMES) - 1
-	
-	ind = find(cylcesToPlot == cycle);
-	cycle = cycle + 1;
-	if(isempty(ind))
-		continue;
-	end
+cycle = 3;
+count = 1;
+
+figure('name', 'Cycles');
+axis([0 101 -40 40]);
+colors=distinguishable_colors(10);
+hold on;
+for j = cylcesToPlot
 
 	s = IC_TIMES(j);
 	e = IC_TIMES(j+1);	
@@ -90,10 +90,24 @@ for j = 1 : length(IC_TIMES) - 1
 	target = gait.jointAngle(s:e, ankleZ);
 	target = resample(target, 101, length(target));
 
-	figure('name', strcat('Cycle-', int2str(cycle-1)));
-	hold on;
-	axis([0 101 -40 40]);
-	plot(1:101, target);
-	hold off;
-
+	%figure('name', strcat('Cycle-', int2str(cycle-1)));
+	%hold on;
+	%axis([0 101 -40 40]);
+	%plot(1:101, target);
+	%hold off;
+	
+	%subplot(4,1,count);
+	%hold on;
+	%axis([0 101 -40 40]);
+	%plot(1:101, target);
+	%title(strcat('Cycle - ', int2str(cycle)));
+	%count = count + 1;
+	
+	plot(1:101, target, 'color', colors(count,:));
+	legStrs{count} = sprintf('Cycle %d', j);
+	
+	cycle = cycle + 1;
+	count = count + 1;	
 end
+legend(legStrs{:});
+hold off;

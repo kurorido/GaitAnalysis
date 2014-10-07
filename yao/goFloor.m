@@ -1,16 +1,13 @@
-method = 4;
+init;
 
-ROOT_DIR = 'J:\Roliroli-Gait\GaitAnalysis\yao\';
-%DATA_NAME = 'sb-111001-1L-000-1';
-DATA_NAME = 'sb-111003-1L-T20-2';
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-stair = false;
 DATA_DIR = strcat(ROOT_DIR, DATA_NAME); 
 mkdir(DATA_DIR); % Create a directory for subject
 
 load(strcat(ROOT_DIR, DATA_NAME));
+
+normalize = false;
+draw = false;
+FeatureInit;
 
 START_TIME = 1;
 END_TIME = size(gait.acceleration, 1);
@@ -21,6 +18,12 @@ FeatureInit;
 runIC;
 runTO;
 
+% Find a stable IC Sequences
+pelvisIC = stableIC(pelvisIC);
+shankIC = stableIC(shankIC);
+footIC = stableIC(footIC);
+svrIC = stableIC(svrIC);
+
 % Base on IC to truncate TO
 pelvisTO = truncateTO(pelvisIC, pelvisTO);
 shankTO = truncateTO(shankIC, shankTO);
@@ -28,8 +31,9 @@ footTO = truncateTO(footIC, footTO);
 svrTO = truncateTO(svrIC, svrTO);
 
 if method == 1
-	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), pelvisIC+10);
-	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), pelvisTO);
+	shift = 10;
+	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), pelvisIC+shift);
+	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), pelvisTO+shift);
 elseif method == 2
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), shankIC);
 	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), shankTO);
@@ -41,8 +45,10 @@ else
 	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), svrTO);
 end
 
-startContact = 7;
-endContact = 15;
+%startContact = 33;
+startContact = 3;
+endContact = 9;
+%endContact = 21;
 
 leftFirst = false;
 
@@ -103,7 +109,13 @@ else
 	shoulderZ = 24;	
 end
 
-cycle = 1;
+cycle = 3;
+
+count = 1;
+figure('name', 'Cycles');
+axis([0 101 -40 40]);
+colors=distinguishable_colors(10);
+hold on;
 for j = startContact : 2 : endContact
 
 	s = IC_TIMES(j);
@@ -114,13 +126,15 @@ for j = startContact : 2 : endContact
 	
 	target = gait.jointAngle(s:e, ankleZ);
 	target = resample(target, 101, length(target));
-    
-	figure('name', strcat('Cycle-', int2str(cycle)));
-	hold on;
-	axis([0 101 -40 40]);
-	plot(1:101, target);
-	hold off;
 	
+    %% Plot single normalized
+	%figure('name', strcat('Cycle-', int2str(cycle)));
+	%hold on;
+	%axis([0 101 -40 40]);
+	%plot(1:101, target);
+	%hold off;
+	
+	% Plot singel raw
 	%target = gait.jointAngle(s:e, ankleZ);
     %
 	%figure('name', strcat('Cycle-', int2str(cycle)));
@@ -133,6 +147,21 @@ for j = startContact : 2 : endContact
 	%
 	%hold off;
 	
+	%subplot(4,1,count);
+	%hold on;
+	%axis([0 101 -40 40]);
+	%plot(1:101, target);
+	%title(strcat('Cycle - ', int2str(cycle)));
+	%count = count + 1;
+	
+	% Plot all in one
+	
+	plot(1:101, target, 'color', colors(count,:));
+	legStrs{count} = sprintf('Cycle %d', cycle);
+	
 	cycle = cycle + 1;
+	count = count + 1;
 
 end
+legend(legStrs{:});
+hold off;
