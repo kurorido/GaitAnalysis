@@ -30,6 +30,12 @@ shankTO = truncateTO(shankIC, shankTO);
 footTO = truncateTO(footIC, footTO);
 svrTO = truncateTO(svrIC, svrTO);
 
+% Validate cycle sequence
+[pelvisIC, pelvisTO] = cycleValidate(pelvisIC, pelvisTO);
+[shankIC, shankTO] = cycleValidate(shankIC, shankTO);
+[footIC, footTO] = cycleValidate(footIC, footTO);
+[svrIC, svrTO] = cycleValidate(svrIC, svrTO);
+
 if method == 1
 	shift = 10;
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), pelvisIC+shift);
@@ -40,7 +46,7 @@ elseif method == 2
 elseif method == 3
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), footIC);
 	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), footTO);
-else
+elseif method == 4
 	dlmwrite(strcat(DATA_DIR, '\ic_time.txt'), svrIC);
 	dlmwrite(strcat(DATA_DIR, '\to_time.txt'), svrTO);
 end

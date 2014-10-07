@@ -5,5 +5,5 @@ function newTO = truncateTO(IC, TO)
 	ind = find(diffs > 0);
 	ind = ind(1);
 	newTO = TO(ind:end);
-
+	
 end
